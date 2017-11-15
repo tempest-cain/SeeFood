@@ -24,7 +24,7 @@ import javax.imageio.ImageIO;
  */
 public class Server {
 
-    private final String VERSION = "See-0.9.7_Beta";
+    private final String VERSION = "See-0.9.8_Beta";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
@@ -187,8 +187,13 @@ public class Server {
         while (loop) {
 
             // Accept input from Client
-            int x = in.readInt();
-
+            int x = -1;
+            
+            try{
+                x = in.readInt();
+            }catch(Exception ex){
+                x = 4;
+            }
             // Execute chosen function
             switch (x) {
 
