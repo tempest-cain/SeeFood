@@ -160,7 +160,7 @@ public class Server {
             // Begin interaction with Client
             try {
                 run = options(out, in);
-            } catch (EOFException ex) {
+            } catch (Exception ex) {
                 ;//Dont crash server if client crashes
             }
 
