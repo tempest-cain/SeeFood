@@ -18,7 +18,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import javax.imageio.ImageIO;
+import javax.imageio.ImageIO; 
 
 /**
  * Main SeeFood Server class
