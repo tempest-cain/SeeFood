@@ -10,9 +10,12 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.imageio.ImageIO;
@@ -35,6 +38,7 @@ public class Server {
     private ObjectInputStream in = null;
     private DataOutputStream out2 = null;
     private DataInputStream in2 = null;
+    PrintWriter log = null;
     
 
     /**
@@ -149,10 +153,15 @@ public class Server {
 
         // Main program loop
         while (run) {
+            
+            log.append("\n\nListening...");
+            log.flush();
 
             // Listen for and accept Client connection
             socket = server.accept();
 
+            log.append("Connected to a client: "+socket.getInetAddress() +" Port: "+ socket.getPort()+"\n\n");
+            log.flush();
             // Create input and output stream for this connection
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
@@ -200,24 +209,32 @@ public class Server {
                 // Analyze picture sent from Client
                 case 1:
                     analyze(in, out);
+                    log.append("Picture Analyzed\n");
+                    log.flush();
                     System.out.println("Picture Analyzed");
                     break;
 
                 // Send gallery to Client
                 case 2:
                     getGallery(out);
+                    log.append("Gallery Sent\n");
+                    log.flush();
                     System.out.println("Gallery Sent");
                     break;
 
                 // Send total statistics to Client
                 case 3:
                     getStats(out);
+                    log.append("Statistics Sent\n");
+                    log.flush();
                     System.out.println("Statistics Sent");
                     break;
 
                 // Acknowledge Client terminating connection and wait for new connection
                 case 4:
                     loop = false;
+                    log.append("Goodbye - Case 4\n");
+                    log.flush();
                     System.out.println("Goodbye");
                     break;
 
@@ -225,18 +242,24 @@ public class Server {
                 case 5:
                     keepServerAlive = false;
                     loop = false;
+                    log.append("Goodbye - Case 5\n");
+                    log.flush();
                     System.out.println("Goodbye");
                     break;
 
                 // Send SeeFood Server version number to the Client
                 case 6:
                     getVersion(out);
+                    log.append("Version info sent\n");
+                    log.flush();
                     System.out.println("Version Info Sent");
                     break;
 
                 // Delete the SeeFood Server database
                 case 7:
                     deleteDB(out);
+                    log.append("Database Erased\n");
+                    log.flush();
                     System.out.println("Database Erased");
                     break;
 
@@ -255,11 +278,17 @@ public class Server {
      * @throws ClassNotFoundException
      */
     public Server() throws IOException, ClassNotFoundException {
-
+        
+        log = new PrintWriter(new FileWriter("/home/ec2-user/log.txt", true));
+        log.append("Starting\n");
+        log.flush();
+        
         // Create a ServerSocket and begin listening for connections
         server = new ServerSocket(3000);
         server2 = new ServerSocket(4000);
 
+        log.append("Connected\n");
+        log.flush();
         Runtime runtime = Runtime.getRuntime();
         try {
             java.lang.Process temp = runtime.exec("python2.7 " + FIND_FOOD);
@@ -274,6 +303,9 @@ public class Server {
         // Receive acknowledgement that Python Script is running
         boolean x = in2.readBoolean();
 
+        log.append("Ready\n");
+        log.flush();
+        
         System.out.println("Ready");
 
         // Listen for connections
@@ -295,6 +327,10 @@ public class Server {
         socket.close();
         socket = null;
         
+        
+        log.append("Closing Server\n\n");
+        log.flush();
+        log.close();
     }// End Server
 
 }
