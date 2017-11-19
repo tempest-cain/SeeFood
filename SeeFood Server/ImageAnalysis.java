@@ -14,7 +14,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.Socket;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +40,7 @@ public final class ImageAnalysis {
      * @return Array containing the results
      * @throws IOException
      */
-    public int[] analyze(BufferedImage img, DataInputStream in2, DataOutputStream out2) throws IOException {
+    public void analyze(BufferedImage img, ObjectInputStream in, ObjectOutputStream out, DataInputStream in2, DataOutputStream out2) throws IOException {
 
         // Create TotalStats.bin if it doesnt already exist
         checkTotalStatsFile(TOTAL_STATS_FILE_LOC);
@@ -54,16 +55,17 @@ public final class ImageAnalysis {
         String filename = writeImage(img, directory, timestamp);
 
         // Call the AI to analyze the picture
-        callFindFood(filename, in2, out2);
+        int[] result = callFindFood(filename, in2, out2);
+        
+        // Write each result, the first [0] is whether the picture contained food or not
+        // The second [1] is the confidence rating from the AI
+        out.writeInt(result[0]);
+        out.flush();
+        out.writeInt(result[1]);
+        out.flush();
 
         // Update the overall statistics with the values from the AI
-        updateTotalStatsFile(TOTAL_STATS_FILE_LOC, directory, timestamp);
-
-        // Write the food/not food and confidence values to an array
-        int[] results = getStats(directory, timestamp);
-
-        // Return the results array
-        return results;
+        updateTotalStatsFile(TOTAL_STATS_FILE_LOC, result[0]);
 
     }// End analyze()
 
@@ -72,7 +74,7 @@ public final class ImageAnalysis {
      *
      * @param filename the location of the picture to be analyzed
      */
-    public void callFindFood(String filename, DataInputStream in2, DataOutputStream out2) throws IOException {
+    public int[] callFindFood(String filename, DataInputStream in2, DataOutputStream out2) throws IOException {
 
         // Create a string of the filename of the image to be analyzed
         String pictureLoc = filename;
@@ -82,8 +84,14 @@ public final class ImageAnalysis {
         out2.write(byteArray);
         out2.flush();
 
+        int[] result = new int[2];
+        result[0] = in2.readInt();
+        result[1] = in2.readInt();
+
         // Receive confirmation of complete operation from find_food.py
         in2.readBoolean();
+        
+        return result;
 
     }// End callFindFood()
 
@@ -102,7 +110,7 @@ public final class ImageAnalysis {
         // If TotalStats.bin doesnt exist, create a default TotalStats.bin
         // If TotalStats.bin does exist, verify it is not corrupted
         File file = new File(folder + "TotalStats.bin");
-        if (!file.exists()) {
+        if (!file.exists() || file.length() != 12) {
             try {
 
                 // Create default file
@@ -120,22 +128,6 @@ public final class ImageAnalysis {
             } catch (IOException ex) {
                 Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
-            try {
-
-                // Verify file
-                DataInputStream is = new DataInputStream(new FileInputStream(file));
-                int total = is.readInt();
-                int food = is.readInt();
-                int Nfood = is.readInt();
-
-                is.close();
-
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                System.out.println("TotalStats.bin is CORRUPTED 131");
-            }
         }
 
     }// End checkTotalStatsFile()
@@ -151,7 +143,7 @@ public final class ImageAnalysis {
 
         File folder = new File(databasePath + timestamp + "/");
 
-        folder.mkdir();
+        folder.mkdirs();
 
         return folder.getAbsolutePath() + "/";
 
@@ -225,29 +217,6 @@ public final class ImageAnalysis {
     }// End deleteDB()
 
     /**
-     * Get the results from the picture analysis
-     *
-     * @param directory Folder containing the results file
-     * @param timestamp Name, excluding extension, of the results file
-     * @return Array containing the results
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
-    public int[] getStats(String directory, long timestamp) throws FileNotFoundException, IOException {
-
-        DataInputStream is = new DataInputStream(new FileInputStream(directory + timestamp + ".bin"));
-        int[] results = new int[2];
-
-        results[0] = is.readInt();  // Food or Not
-        results[1] = is.readInt();  // Confidence rating
-
-        is.close();
-
-        return results;
-
-    }// End getStats()
-
-    /**
      * Removes the alpha channel from a picture
      *
      * @param img Picture to remove alpha channel from
@@ -275,19 +244,17 @@ public final class ImageAnalysis {
      * file
      * @param imageID Name, excluding extension, of the results file
      */
-    public void updateTotalStatsFile(String totalStatsLoc, String imageFolderLoc, long imageID) {
+    public void updateTotalStatsFile(String totalStatsLoc, int result) {
 
-        // Create references to needed files
+        // Create references to needed file
         File totalStats = new File(totalStatsLoc + "TotalStats.bin");
-        File imgStats = new File(imageFolderLoc + imageID + ".bin");
 
-        // If both files exist, update the TotalStats.bin file, else print an error message
-        if (totalStats.exists() && imgStats.exists()) {
+        // If file exist, update the TotalStats.bin file, else print an error message
+        if (totalStats.exists()) {
 
             // Update TotalStats.bin
             try {
                 DataInputStream is = new DataInputStream(new FileInputStream(totalStats));
-                DataInputStream is2 = new DataInputStream(new FileInputStream(imgStats));
 
                 // Read current values from TotalStats.bin
                 int total = is.readInt();
@@ -296,14 +263,13 @@ public final class ImageAnalysis {
 
                 // Update totals
                 total++;
-                if (is2.readInt() != 0) {
+                if (result == 1) {
                     food++;
                 } else {
                     Nfood++;
                 }
 
                 is.close();
-                is2.close();
 
                 DataOutputStream os = new DataOutputStream(new FileOutputStream(totalStats));
 
@@ -317,13 +283,13 @@ public final class ImageAnalysis {
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                System.out.println("TotalStats.bin is CORRUPTED 303");
+                //System.out.println("TotalStats.bin is CORRUPTED");
             }
 
         } else {
 
             // Print error message
-            System.out.println("File or Folder does NOT exist, terminating...");
+            //System.out.println("File or Folder does NOT exist, terminating...");
         }
 
     }// End updateTotalStatsFile()

@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,7 +17,8 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import javax.imageio.ImageIO; 
+import java.util.Date;
+import javax.imageio.ImageIO;
 
 /**
  * Main SeeFood Server class
@@ -27,7 +27,7 @@ import javax.imageio.ImageIO;
  */
 public class Server {
 
-    private final String VERSION = "See-0.9.8_Beta";
+    private final String VERSION = "See-0.1.1_Beta";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
@@ -39,7 +39,8 @@ public class Server {
     private DataOutputStream out2 = null;
     private DataInputStream in2 = null;
     PrintWriter log = null;
-    
+    //String logLoc = "/home/james/Desktop/log.txt";
+    String logLoc = "/home/ec2-user/log.txt";
 
     /**
      * Receives a picture from the Client and begins the analysis process
@@ -60,14 +61,8 @@ public class Server {
 
         // Create instance of class that analyzes picture and call its analyze method and store results
         ImageAnalysis analyze = new ImageAnalysis();
-        int[] results = analyze.analyze(img, in2, out2);
+        analyze.analyze(img, in, out, in2, out2);
 
-        // Write each result, the first [0] is whether the picture contained food or not
-        // The second [1] is the confidence rating from the AI
-        out.writeInt(results[0]);
-        out.flush();
-        out.writeInt(results[1]);
-        out.flush();
     }// End analyze()
 
     /**
@@ -153,14 +148,14 @@ public class Server {
 
         // Main program loop
         while (run) {
-            
-            log.append("\n\nListening...");
+
+            log.append("\n\nListening... " + (new Date()).toString() + "\n");
             log.flush();
 
             // Listen for and accept Client connection
             socket = server.accept();
 
-            log.append("Connected to a client: "+socket.getInetAddress() +" Port: "+ socket.getPort()+"\n\n");
+            log.append("Connected to a client: " + socket.getInetAddress() + " Port: " + socket.getPort() + " " + (new Date()).toString() + "\n\n");
             log.flush();
             // Create input and output stream for this connection
             out = new ObjectOutputStream(socket.getOutputStream());
@@ -168,10 +163,19 @@ public class Server {
 
             // Begin interaction with Client
             try {
-                run = options(out, in);
+                run = options();
             } catch (Exception ex) {
-                ;//Dont crash server if client crashes
+                //Dont crash server if client crashes
+                log.append("\n***Connection to app lost*** " + (new Date()).toString() + "\n");
+                log.flush();
             }
+            
+            out.close();
+            out = null;
+            in.close();
+            in = null;
+            socket.close();
+            socket = null;
 
         }
 
@@ -187,85 +191,66 @@ public class Server {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public boolean options(ObjectOutputStream out, ObjectInputStream in) throws IOException, ClassNotFoundException {
+    public boolean options() throws IOException, ClassNotFoundException {
 
         // Create control variables
-        boolean keepServerAlive = true, loop = true;
-
-        // Begin Server-Client Communication loop
-        while (loop) {
+        boolean keepServerAlive = true;
 
             // Accept input from Client
-            int x = -1;
-            
-            try{
-                x = in.readInt();
-            }catch(Exception ex){
-                x = 4;
-            }
+            int x = in.readInt();
+
             // Execute chosen function
             switch (x) {
 
                 // Analyze picture sent from Client
                 case 1:
                     analyze(in, out);
-                    log.append("Picture Analyzed\n");
+                    log.append("Picture Analyzed " + (new Date()).toString() + "\n");
                     log.flush();
-                    System.out.println("Picture Analyzed");
                     break;
 
                 // Send gallery to Client
                 case 2:
                     getGallery(out);
-                    log.append("Gallery Sent\n");
+                    log.append("Gallery Sent " + (new Date()).toString() + "\n");
                     log.flush();
-                    System.out.println("Gallery Sent");
                     break;
 
                 // Send total statistics to Client
                 case 3:
                     getStats(out);
-                    log.append("Statistics Sent\n");
+                    log.append("Statistics Sent " + (new Date()).toString() + "\n");
                     log.flush();
-                    System.out.println("Statistics Sent");
                     break;
 
                 // Acknowledge Client terminating connection and wait for new connection
                 case 4:
-                    loop = false;
-                    log.append("Goodbye - Case 4\n");
+                    log.append("Goodbye - Case 4 " + (new Date()).toString() + "\n");
                     log.flush();
-                    System.out.println("Goodbye");
                     break;
 
                 // Terminate the connection to the Client and the SeeFood Server
                 case 5:
                     keepServerAlive = false;
-                    loop = false;
-                    log.append("Goodbye - Case 5\n");
+                    log.append("Goodbye - Case 5 " + (new Date()).toString() + "\n");
                     log.flush();
-                    System.out.println("Goodbye");
                     break;
 
                 // Send SeeFood Server version number to the Client
                 case 6:
                     getVersion(out);
-                    log.append("Version info sent\n");
+                    log.append("Version info sent " + (new Date()).toString() + "\n");
                     log.flush();
-                    System.out.println("Version Info Sent");
                     break;
 
                 // Delete the SeeFood Server database
                 case 7:
                     deleteDB(out);
-                    log.append("Database Erased\n");
+                    log.append("Database Erased " + (new Date()).toString() + "\n");
                     log.flush();
-                    System.out.println("Database Erased");
                     break;
 
             }
-
-        }
 
         return keepServerAlive;
 
@@ -278,57 +263,53 @@ public class Server {
      * @throws ClassNotFoundException
      */
     public Server() throws IOException, ClassNotFoundException {
-        
-        log = new PrintWriter(new FileWriter("/home/ec2-user/log.txt", true));
-        log.append("Starting\n");
-        log.flush();
-        
-        // Create a ServerSocket and begin listening for connections
-        server = new ServerSocket(3000);
-        server2 = new ServerSocket(4000);
 
-        log.append("Connected\n");
+        log = new PrintWriter(new FileWriter(logLoc, true));
+        log.append("\nStarting " + (new Date()).toString() + "\n");
         log.flush();
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            java.lang.Process temp = runtime.exec("python2.7 " + FIND_FOOD);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        if (!(new File(FIND_FOOD)).exists()) {
+            log.append("Missing find_food.py " + (new Date()).toString() + "\n");
+        } else {
+
+            // Create a ServerSocket and begin listening for connections
+            server = new ServerSocket(3000);
+            server2 = new ServerSocket(4000);
+
+            log.append("Connected " + (new Date()).toString() + "\n");
+            log.flush();
+            Runtime runtime = Runtime.getRuntime();
+            try {
+                java.lang.Process temp = runtime.exec("python2.7 " + FIND_FOOD);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            socket2 = server2.accept();
+            out2 = new DataOutputStream(socket2.getOutputStream());
+            in2 = new DataInputStream(socket2.getInputStream());
+
+            // Receive acknowledgement that Python Script is running
+            boolean x = in2.readBoolean();
+
+            log.append("Ready " + (new Date()).toString() + "\n");
+            log.flush();
+
+            //System.out.println("Ready");
+            // Listen for connections
+            listen();
+
+            // Close streams and socket relating to the Python Script
+            out2.close();
+            out2 = null;
+            in2.close();
+            in2 = null;
+            socket2.close();
+            socket2 = null;
+
         }
 
-        socket2 = server2.accept();
-        out2 = new DataOutputStream(socket2.getOutputStream());
-        in2 = new DataInputStream(socket2.getInputStream());
-        
-        // Receive acknowledgement that Python Script is running
-        boolean x = in2.readBoolean();
-
-        log.append("Ready\n");
-        log.flush();
-        
-        System.out.println("Ready");
-
-        // Listen for connections
-        listen();
-        
-        // Close streams and socket relating to the Python Script
-        out2.close();
-        out2 = null;
-        in2.close();
-        in2 = null;
-        socket2.close();
-        socket2 = null;
-
-        // Close input/output streams and socket relating to the Client
-        out.close();
-        out = null;
-        in.close();
-        in = null;
-        socket.close();
-        socket = null;
-        
-        
-        log.append("Closing Server\n\n");
+        log.append("Closing Server " + (new Date()).toString() + "\n\n");
         log.flush();
         log.close();
     }// End Server
