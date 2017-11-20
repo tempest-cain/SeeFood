@@ -10,10 +10,12 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,7 +29,7 @@ import javax.imageio.ImageIO;
  */
 public class Server {
 
-    private final String VERSION = "See-0.1.1_Beta";
+    private final String VERSION = "See-0.1.2_Beta";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
@@ -41,6 +43,8 @@ public class Server {
     PrintWriter log = null;
     //String logLoc = "/home/james/Desktop/log.txt";
     String logLoc = "/home/ec2-user/log.txt";
+    String error = "/home/ec2-user/err.txt";
+    //String error = "/home/james/desktop/err.txt";
 
     /**
      * Receives a picture from the Client and begins the analysis process
@@ -157,19 +161,20 @@ public class Server {
 
             log.append("Connected to a client: " + socket.getInetAddress() + " Port: " + socket.getPort() + " " + (new Date()).toString() + "\n\n");
             log.flush();
-            // Create input and output stream for this connection
-            out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());
 
             // Begin interaction with Client
             try {
+                // Create input and output stream for this connection
+                out = new ObjectOutputStream(socket.getOutputStream());
+                in = new ObjectInputStream(socket.getInputStream());
+
                 run = options();
             } catch (Exception ex) {
                 //Dont crash server if client crashes
                 log.append("\n***Connection to app lost*** " + (new Date()).toString() + "\n");
                 log.flush();
             }
-            
+
             out.close();
             out = null;
             in.close();
@@ -196,61 +201,61 @@ public class Server {
         // Create control variables
         boolean keepServerAlive = true;
 
-            // Accept input from Client
-            int x = in.readInt();
+        // Accept input from Client
+        int x = in.readInt();
 
-            // Execute chosen function
-            switch (x) {
+        // Execute chosen function
+        switch (x) {
 
-                // Analyze picture sent from Client
-                case 1:
-                    analyze(in, out);
-                    log.append("Picture Analyzed " + (new Date()).toString() + "\n");
-                    log.flush();
-                    break;
+            // Analyze picture sent from Client
+            case 1:
+                analyze(in, out);
+                log.append("Picture Analyzed " + (new Date()).toString() + "\n");
+                log.flush();
+                break;
 
-                // Send gallery to Client
-                case 2:
-                    getGallery(out);
-                    log.append("Gallery Sent " + (new Date()).toString() + "\n");
-                    log.flush();
-                    break;
+            // Send gallery to Client
+            case 2:
+                getGallery(out);
+                log.append("Gallery Sent " + (new Date()).toString() + "\n");
+                log.flush();
+                break;
 
-                // Send total statistics to Client
-                case 3:
-                    getStats(out);
-                    log.append("Statistics Sent " + (new Date()).toString() + "\n");
-                    log.flush();
-                    break;
+            // Send total statistics to Client
+            case 3:
+                getStats(out);
+                log.append("Statistics Sent " + (new Date()).toString() + "\n");
+                log.flush();
+                break;
 
-                // Acknowledge Client terminating connection and wait for new connection
-                case 4:
-                    log.append("Goodbye - Case 4 " + (new Date()).toString() + "\n");
-                    log.flush();
-                    break;
+            // Acknowledge Client terminating connection and wait for new connection
+            case 4:
+                log.append("Goodbye - Case 4 " + (new Date()).toString() + "\n");
+                log.flush();
+                break;
 
-                // Terminate the connection to the Client and the SeeFood Server
-                case 5:
-                    keepServerAlive = false;
-                    log.append("Goodbye - Case 5 " + (new Date()).toString() + "\n");
-                    log.flush();
-                    break;
+            // Terminate the connection to the Client and the SeeFood Server
+            case 5:
+                keepServerAlive = false;
+                log.append("Goodbye - Case 5 " + (new Date()).toString() + "\n");
+                log.flush();
+                break;
 
-                // Send SeeFood Server version number to the Client
-                case 6:
-                    getVersion(out);
-                    log.append("Version info sent " + (new Date()).toString() + "\n");
-                    log.flush();
-                    break;
+            // Send SeeFood Server version number to the Client
+            case 6:
+                getVersion(out);
+                log.append("Version info sent " + (new Date()).toString() + "\n");
+                log.flush();
+                break;
 
-                // Delete the SeeFood Server database
-                case 7:
-                    deleteDB(out);
-                    log.append("Database Erased " + (new Date()).toString() + "\n");
-                    log.flush();
-                    break;
+            // Delete the SeeFood Server database
+            case 7:
+                deleteDB(out);
+                log.append("Database Erased " + (new Date()).toString() + "\n");
+                log.flush();
+                break;
 
-            }
+        }
 
         return keepServerAlive;
 
@@ -263,6 +268,12 @@ public class Server {
      * @throws ClassNotFoundException
      */
     public Server() throws IOException, ClassNotFoundException {
+
+        File file = new File(error);
+        file.createNewFile();
+        FileOutputStream fos = new FileOutputStream(file);
+        PrintStream ps = new PrintStream(fos);
+        System.setErr(ps);
 
         log = new PrintWriter(new FileWriter(logLoc, true));
         log.append("\nStarting " + (new Date()).toString() + "\n");
