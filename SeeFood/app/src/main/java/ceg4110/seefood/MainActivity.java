@@ -71,11 +71,12 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch (View v, MotionEvent event) {
 
                 switch(event.getAction()) {
-                    case ACTION_UP: cameraButton.setImageResource(R.drawable.camera);
+                    case ACTION_UP:
+                        cameraButton.setImageResource(R.drawable.camera);
+                        dispatchTakePictureIntent();
                         break;
                     case ACTION_DOWN:
                         cameraButton.setImageResource(R.drawable.camera2);
-                        dispatchTakePictureIntent();
                         break;
                 }
                 return true;
@@ -87,28 +88,30 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch (View v, MotionEvent event) {
 
                 switch(event.getAction()) {
-                    case ACTION_UP: browseButton.setImageResource(R.drawable.browse);
+                    case ACTION_UP:
+                        browseButton.setImageResource(R.drawable.browse);
+                        performFileSearch();
                         break;
                     case ACTION_DOWN:
                         browseButton.setImageResource(R.drawable.browse2);
-                        performFileSearch();
                         break;
                 }
                 return true;
             }
         });
 
-
         galleryButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch (View v, MotionEvent event) {
 
                 switch(event.getAction()) {
-                    case ACTION_UP: galleryButton.setImageResource(R.drawable.gallery);
+                    case ACTION_UP:
+                        galleryButton.setImageResource(R.drawable.gallery);
+                        new MyAsyncTask().execute("2");
                         break;
                     case ACTION_DOWN:
                         galleryButton.setImageResource(R.drawable.gallery2);
-                        new MyAsyncTask().execute("2");
+
                         break;
                 }
                 return true;
@@ -120,11 +123,12 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch (View v, MotionEvent event) {
 
                 switch(event.getAction()) {
-                    case ACTION_UP: statsButton.setImageResource(R.drawable.stats);
+                    case ACTION_UP:
+                        statsButton.setImageResource(R.drawable.stats);
+                        new MyAsyncTask().execute("3");
                         break;
                     case ACTION_DOWN:
                         statsButton.setImageResource(R.drawable.stats2);
-                        new MyAsyncTask().execute("3");
                         break;
                 }
                 return true;
@@ -162,13 +166,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    /**
-     * Sends the picture in mCurrentPhotoPath to the server.
-     * @param v
-     */
-
-
+    
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -185,15 +183,12 @@ public class MainActivity extends AppCompatActivity {
         return image;
     }
 
-
-
     /**
      * Fires an intent to spin up the "file chooser" UI and select an image.
      */
     public void performFileSearch() {
 
-        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
-        // browser.
+        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file browser.
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 
         // Filter to only show results that can be "opened", such as a
@@ -201,9 +196,6 @@ public class MainActivity extends AppCompatActivity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         // Filter to show only images, using the image MIME data type.
-        // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
-        // To search for all documents available via installed storage providers,
-        // it would be "*/*".
         intent.setType("image/*");
 
         startActivityForResult(intent, READ_REQUEST_CODE);
@@ -225,20 +217,10 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = null;
             if (resultData != null) {
                 uri = resultData.getData();
-//                Log.i(TAG, "Uri: " + uri.toString());
-//                showImage(uri);
-//                Context context = getApplicationContext();
-//                CharSequence text = "Not food! Confidence: 75%";
-//                int duration = Toast.LENGTH_LONG;
-//
-//                Toast toast = Toast.makeText(context, text, duration);
-//                toast.show();
                 File image = new File(uri.getPath());
                 mCurrentPhotoPath = image.getAbsolutePath();
-                mCurrentPhotoPath = mCurrentPhotoPath.replaceAll("/document/primary:","/storage/emulated/0/");
+                mCurrentPhotoPath = mCurrentPhotoPath.replaceAll("/document/primary:","/storage/emulated/0/"); //// FIXME: 11/20/2017 
                 new MyAsyncTask().execute("1",mCurrentPhotoPath);
-
-//                Bundle extras = resultData.getExtras();
 
             }
         } else if(requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
@@ -251,7 +233,6 @@ public class MainActivity extends AppCompatActivity {
      */
     class MyAsyncTask extends AsyncTask<String,Void,Integer> {
 
-        private final static String VERSION = "3.1.1";
         private Socket socket = null;
         private ObjectOutputStream out = null;
         private ObjectInputStream in = null;
@@ -279,9 +260,7 @@ public class MainActivity extends AppCompatActivity {
                     getStats();
                     return 3;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
             return -1;
         }
 
@@ -322,35 +301,8 @@ public class MainActivity extends AppCompatActivity {
                 // Define a File object to later store the picture filename
                 File pict = null;
 
-                // Loop to control user input of filename
-                //while (true) {
-
-                // Accept and process user input
-//                System.out.print("Enter filename of picture to analyze or type menu: ");
-//                Scanner userInput = new Scanner(System.in);
-//                String pictureLoc = userInput.nextLine();
-
-                // Allows user to return to menu instead of selecting a picture
-                if (pictureLoc.equals("menu")) {
-                    return;
-                }
-
                 // Create File object and test if the filename exists
                 pict = new File(pictureLoc);
-                if (pict.exists()) {
-
-                    // Aid with garbage collection of Scanner object as it is no longer need beyond this point
-//                    userInput = null;
-//                    break;
-                }
-
-                // Alert user that the filename specified does not exist and loop cycles again
-                System.out.println("\n\n***File does not exist***\n\n");
-
-                //}
-
-                // Alert user that the server is analyzing the selected picture
-                System.out.println("Analyzing");
 
                 // Create connection to server if not already connected and send server the proper command
                 establishConnection();
@@ -376,15 +328,7 @@ public class MainActivity extends AppCompatActivity {
                 isFood = in.readInt();
                 confidence = in.readInt();
 
-                // Print the received results
-                System.out.println("\n\nIs food:    " + isFood + "\n" + "Confidence: " + confidence);
-                System.out.println("\n\n");
-
-
-
-            } catch (ConnectException ex) {
-                System.out.println("\n\nNot connected to SeeFood server\n\n");
-            }
+            } catch (ConnectException ex) {}
 
         }// End analyze()
 
@@ -405,22 +349,6 @@ public class MainActivity extends AppCompatActivity {
         }// End establishConnection()
 
         /**
-         * Ends the connection created by establishConnection().
-         * @throws IOException
-         */
-        private void endConnection() throws IOException {
-
-            // If there is an active connection with the SeeFood Server, end it otherwise do nothing
-            if (socket != null) {
-                out.close();
-                in.close();
-                socket.close();
-                socket = null;
-            }
-
-        }// End endConnection()
-
-        /**
          * Requests the current stats of the SeeFood server.
          * @throws IOException
          */
@@ -430,41 +358,20 @@ public class MainActivity extends AppCompatActivity {
                 // Connect to SeeFood Server if not already connected and send the get statistics command
                 establishConnection();
 
-
                 out.writeInt(3);
                 out.flush();
 
                 // Create variable to hold retrieved results
-
                 total = food = not = -1;
 
                 // Recieve the values from the SeeFood Server
                 total = in.readInt();
-                if (total == (-1)) {
-                    System.out.println("Error");
-                } else {
+                if (total != (-1)) {
                     food = in.readInt();
                     not = in.readInt();
                 }
-
-                // Calcuate the percentage of pictures in database that are food
-                int percentFood = (int) ((food / (double) total) * 100);
-
-                // Print values from SeeFood Server
-                System.out.println("\n\n");
-                System.out.println("Total: " + total);
-                System.out.println("Food:  " + food + "   (" + percentFood + "%)");
-                System.out.println("Not:   " + not + "   (" + ((total == 0) ? 0 : (100 - percentFood)) + "%)");
-                System.out.println("\n\n");
-
-            } catch (ConnectException ex) {
-                System.out.println("Not connected to SeeFood server\n\n");
-            }
+            } catch (ConnectException ex) {}
         }// End getStats()
-
-
     }
-
-
 }
 
