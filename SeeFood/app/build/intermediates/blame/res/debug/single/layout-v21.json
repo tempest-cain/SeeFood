@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_icon_group.xml",
+        "source": "C:\\Users\\badrm\\.android\\build-cache\\689f8fb868e8d0c7272e958e7426d82b02d77027\\output\\res\\layout-v21\\notification_template_icon_group.xml"
+    },
+    {
+        "merged": "C:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_custom_big.xml",
+        "source": "C:\\Users\\badrm\\.android\\build-cache\\689f8fb868e8d0c7272e958e7426d82b02d77027\\output\\res\\layout-v21\\notification_template_custom_big.xml"
+    },
+    {
+        "merged": "C:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action.xml",
+        "source": "C:\\Users\\badrm\\.android\\build-cache\\689f8fb868e8d0c7272e958e7426d82b02d77027\\output\\res\\layout-v21\\notification_action.xml"
+    },
+    {
+        "merged": "C:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action_tombstone.xml",
+        "source": "C:\\Users\\badrm\\.android\\build-cache\\689f8fb868e8d0c7272e958e7426d82b02d77027\\output\\res\\layout-v21\\notification_action_tombstone.xml"
+    }
+]
