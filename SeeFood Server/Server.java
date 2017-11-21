@@ -29,7 +29,7 @@ import javax.imageio.ImageIO;
  */
 public class Server {
 
-    private final String VERSION = "See-0.1.2_Beta";
+    private final String VERSION = "See-0.1.3_Beta";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
@@ -173,6 +173,7 @@ public class Server {
                 //Dont crash server if client crashes
                 log.append("\n***Connection to app lost*** " + (new Date()).toString() + "\n");
                 log.flush();
+                continue;
             }
 
             out.close();
