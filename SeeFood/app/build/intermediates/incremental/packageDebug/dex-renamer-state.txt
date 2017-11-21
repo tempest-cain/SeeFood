@@ -1,4 +1,4 @@
-#Sun Nov 19 16:08:13 EST 2017
+#Mon Nov 20 17:36:20 EST 2017
 base.0=C\:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_6a5b856b0b134b9b6610fd5481ed3b2429907ffd
 renamed.1=classes2.dex
 renamed.0=classes.dex
