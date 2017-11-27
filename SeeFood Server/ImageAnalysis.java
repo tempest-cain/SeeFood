@@ -5,8 +5,8 @@
  */
 package server;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -14,12 +14,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import result.Result;
 
 /**
  * Class for analyzing pictures
@@ -36,23 +35,27 @@ public final class ImageAnalysis {
     /**
      * Analyzes a picture and returns the results
      *
-     * @param img Picture to be analyzed
-     * @return Array containing the results
+     * @param byteArray, picture to analyze in a byte array
+     * @param in2 Input stream to the AI
+     * @param out Output stream to the client
+     * @param out2 Output stream to the AI
      * @throws IOException
      */
-    public void analyze(BufferedImage img, ObjectInputStream in, ObjectOutputStream out, DataInputStream in2, DataOutputStream out2) throws IOException {
+    public void analyze(byte[] byteArray, ObjectOutputStream out, DataInputStream in2, DataOutputStream out2) throws IOException {
 
         // Create TotalStats.bin if it doesnt already exist
         checkTotalStatsFile(TOTAL_STATS_FILE_LOC);
 
-        // Remove the alpha channel from the picture
-        img = removeAlpha(img);
-
-        // Create the folder to store the converted picture and its statistics file
-        // Create the converted picture to be used for analysis
-        long timestamp = createName();
-        String directory = createPictFolder(DATABASE_LOC, timestamp);
-        String filename = writeImage(img, directory, timestamp);
+        // Create input stream and convert the bytes into a picture
+        ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
+        BufferedImage img = ImageIO.read(byteStream);
+        
+        // Create a name and folder for picture
+        int name = createName();
+        String directory = createPictFolder(DATABASE_LOC, name);
+        
+        // Write picture to disk
+        String filename = writeImage(img, directory, name);
 
         // Call the AI to analyze the picture
         int[] result = callFindFood(filename, in2, out2);
@@ -66,6 +69,16 @@ public final class ImageAnalysis {
 
         // Update the overall statistics with the values from the AI
         updateTotalStatsFile(TOTAL_STATS_FILE_LOC, result[0]);
+        
+        // Write the .image file used with the gallery functionality
+        File image = new File(directory+ name +".image");        
+        ObjectOutputStream oout = new ObjectOutputStream(new FileOutputStream(image));
+        
+        Result imageObject = new Result(result[0], result[1], byteArray);
+        
+        oout.writeObject(imageObject);
+        oout.flush();
+        oout.close();
 
     }// End analyze()
 
@@ -73,6 +86,10 @@ public final class ImageAnalysis {
      * Invokes the AI to analyze picture
      *
      * @param filename the location of the picture to be analyzed
+     * @param in2 Input stream to the AI
+     * @param out2 Output stream to the AI
+     * @return Array containing the is food value and confidence value
+     * @throws java.io.IOException
      */
     public int[] callFindFood(String filename, DataInputStream in2, DataOutputStream out2) throws IOException {
 
@@ -136,12 +153,12 @@ public final class ImageAnalysis {
      * Creates the folder for the picture being analyzed and its results file
      *
      * @param databasePath Root folder of the database
-     * @param timestamp Name of the folder
+     * @param name Name of the folder
      * @return The path to the newly created folder
      */
-    public String createPictFolder(String databasePath, long timestamp) {
+    public String createPictFolder(String databasePath, long name) {
 
-        File folder = new File(databasePath + timestamp + "/");
+        File folder = new File(databasePath + name + "/");
 
         folder.mkdirs();
 
@@ -154,12 +171,13 @@ public final class ImageAnalysis {
      * their containing folder
      *
      * @return The name created
+     * @throws java.io.IOException
      */
-    public long createName() {
+    public int createName() throws IOException {
 
         // Generate unique name
-        Date dateObj = new Date();
-        return dateObj.getTime();
+        int name = GetStats.getTotalStats()[0];
+        return ++name;
 
     }// End createName()
 
@@ -217,32 +235,10 @@ public final class ImageAnalysis {
     }// End deleteDB()
 
     /**
-     * Removes the alpha channel from a picture
-     *
-     * @param img Picture to remove alpha channel from
-     * @return BufferedImage of picture without an alpha channel
-     */
-    public BufferedImage removeAlpha(BufferedImage img) {
-
-        // Create BufferedImage to store newly created picture
-        BufferedImage copy = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
-
-        // Copy picture without alpha channel
-        Graphics2D data = copy.createGraphics();
-        data.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), null);
-        data.dispose();
-
-        return copy;
-
-    }// End removeAlpha()
-
-    /**
      * Update the file containing the total statistics, TotalStats.bin
      *
      * @param totalStatsLoc Location of TotalStats.bin
-     * @param imageFolderLoc Location of the newly analyzed picture and results
-     * file
-     * @param imageID Name, excluding extension, of the results file
+     * @param result Whether picture contained food or not
      */
     public void updateTotalStatsFile(String totalStatsLoc, int result) {
 
@@ -299,15 +295,15 @@ public final class ImageAnalysis {
      *
      * @param image Picture to write
      * @param folderPath Folder to write picture to
-     * @param timestamp Name of newly created picture excluding extension as
+     * @param name Name of newly created picture excluding extension as
      * this method converts/stores picture as jpg
      * @return Location of the newly created picture
      * @throws IOException
      */
-    public String writeImage(BufferedImage image, String folderPath, long timestamp) throws IOException {
+    public String writeImage(BufferedImage image, String folderPath, long name) throws IOException {
 
         // Create the filename and write picture to the disk
-        String fileLocation = folderPath + timestamp + ".jpg";
+        String fileLocation = folderPath + name + ".jpg";
         ImageIO.write(image, "jpg", new File(fileLocation));
 
         return fileLocation;

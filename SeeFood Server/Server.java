@@ -5,22 +5,17 @@
  */
 package server;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Date;
-import javax.imageio.ImageIO;
+import java.util.ArrayList;
+import result.Result;
 
 /**
  * Main SeeFood Server class
@@ -29,22 +24,17 @@ import javax.imageio.ImageIO;
  */
 public class Server {
 
-    private final String VERSION = "See-0.1.3_Beta";
+    private final String VERSION = "See-0.1.4_Beta";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
     private Socket socket2 = null;
     private static final String FIND_FOOD = "/home/ec2-user/seefood-core-ai/find_food.py";
     //private static final String FIND_FOOD = "/home/james/Desktop/find_food.py";
+    private static final String IMAGE_FOLDER = "/home/ec2-user/stats/";
+    //private static final String IMAGE_FOLDER = "/home/james/Desktop/Stats/";
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
-    private DataOutputStream out2 = null;
-    private DataInputStream in2 = null;
-    PrintWriter log = null;
-    //String logLoc = "/home/james/Desktop/log.txt";
-    String logLoc = "/home/ec2-user/log.txt";
-    String error = "/home/ec2-user/err.txt";
-    //String error = "/home/james/desktop/err.txt";
 
     /**
      * Receives a picture from the Client and begins the analysis process
@@ -54,18 +44,14 @@ public class Server {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public void analyze(ObjectInputStream in, ObjectOutputStream out) throws IOException, ClassNotFoundException {
+    public void analyze(ObjectInputStream in, ObjectOutputStream out, DataInputStream in2, DataOutputStream out2) throws IOException, ClassNotFoundException {
 
         // Byte array to store picture sent from Client
         byte[] byteArray = (byte[]) in.readObject();
 
-        // Create input stream and convert the bytes into a picture
-        ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
-        BufferedImage img = ImageIO.read(byteStream);
-
         // Create instance of class that analyzes picture and call its analyze method and store results
         ImageAnalysis analyze = new ImageAnalysis();
-        analyze.analyze(img, in, out, in2, out2);
+        analyze.analyze(byteArray, out, in2, out2);
 
     }// End analyze()
 
@@ -87,13 +73,34 @@ public class Server {
     /**
      * Sends the gallery to the Client
      *
-     * @param out Output stream
      * @throws IOException
+     * @throws java.lang.ClassNotFoundException
      */
-    public void getGallery(ObjectOutputStream out) throws IOException {
+    public void getPictArray() throws IOException, ClassNotFoundException {
 
-        // UNFINISHED
-        out.writeUTF("This is the unfinished gallery function");
+        // Arraylist to hold image objects containing the image and its stats
+        ArrayList<Result> al = new ArrayList();
+
+        // Get image number/name to start with, HIGHER number is more recent image
+        int sendImageNo = in.readInt();
+
+        // Read 20 images/stats into the Arraylist
+        for (int i = 0; i < 20 && sendImageNo > 0; ++i, --sendImageNo) {
+
+            File fi = new File(IMAGE_FOLDER + sendImageNo + "/" + sendImageNo + ".image");
+
+            ObjectInputStream oin = new ObjectInputStream(new FileInputStream(fi));
+
+            al.add((Result) oin.readObject());
+
+        }
+
+        // Send arraylist containing part of the Gallery to the client
+        out.writeObject(al);
+        out.flush();
+
+        // Send the size of the arraylist to the client
+        out.writeInt(al.size());
         out.flush();
 
     }// End gallery()
@@ -126,6 +133,19 @@ public class Server {
     }// End getStats()
 
     /**
+     * Sends the total files in DB to client
+     * @param out Output channel to client
+     * @throws IOException 
+     */
+    public void getTotal(ObjectOutputStream out) throws IOException {
+
+        // Send the total value from TotalStats.bin
+        out.writeInt(GetStats.getTotalStats()[0]);
+        out.flush();
+
+    }
+
+    /**
      * Sends the SeeFood Server version number to the Client
      *
      * @param out Output stream
@@ -145,7 +165,7 @@ public class Server {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void listen() throws IOException, ClassNotFoundException {
+    private void listen(DataInputStream in2, DataOutputStream out2) throws IOException, ClassNotFoundException {
 
         // Variable used to control main loop
         boolean run = true;
@@ -153,14 +173,8 @@ public class Server {
         // Main program loop
         while (run) {
 
-            log.append("\n\nListening... " + (new Date()).toString() + "\n");
-            log.flush();
-
             // Listen for and accept Client connection
             socket = server.accept();
-
-            log.append("Connected to a client: " + socket.getInetAddress() + " Port: " + socket.getPort() + " " + (new Date()).toString() + "\n\n");
-            log.flush();
 
             // Begin interaction with Client
             try {
@@ -168,11 +182,9 @@ public class Server {
                 out = new ObjectOutputStream(socket.getOutputStream());
                 in = new ObjectInputStream(socket.getInputStream());
 
-                run = options();
+                run = options(in2, out2);
             } catch (Exception ex) {
                 //Dont crash server if client crashes
-                log.append("\n***Connection to app lost*** " + (new Date()).toString() + "\n");
-                log.flush();
                 continue;
             }
 
@@ -197,7 +209,7 @@ public class Server {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public boolean options() throws IOException, ClassNotFoundException {
+    public boolean options(DataInputStream in2, DataOutputStream out2) throws IOException, ClassNotFoundException {
 
         // Create control variables
         boolean keepServerAlive = true;
@@ -210,50 +222,40 @@ public class Server {
 
             // Analyze picture sent from Client
             case 1:
-                analyze(in, out);
-                log.append("Picture Analyzed " + (new Date()).toString() + "\n");
-                log.flush();
+                analyze(in, out, in2, out2);
                 break;
 
             // Send gallery to Client
             case 2:
-                getGallery(out);
-                log.append("Gallery Sent " + (new Date()).toString() + "\n");
-                log.flush();
+                getPictArray();
                 break;
 
             // Send total statistics to Client
             case 3:
                 getStats(out);
-                log.append("Statistics Sent " + (new Date()).toString() + "\n");
-                log.flush();
                 break;
 
-            // Acknowledge Client terminating connection and wait for new connection
+            // Client left, start waiting for new connection
             case 4:
-                log.append("Goodbye - Case 4 " + (new Date()).toString() + "\n");
-                log.flush();
                 break;
 
             // Terminate the connection to the Client and the SeeFood Server
             case 5:
                 keepServerAlive = false;
-                log.append("Goodbye - Case 5 " + (new Date()).toString() + "\n");
-                log.flush();
                 break;
 
             // Send SeeFood Server version number to the Client
             case 6:
                 getVersion(out);
-                log.append("Version info sent " + (new Date()).toString() + "\n");
-                log.flush();
                 break;
 
             // Delete the SeeFood Server database
             case 7:
                 deleteDB(out);
-                log.append("Database Erased " + (new Date()).toString() + "\n");
-                log.flush();
+                break;
+                
+            case 8:
+                getTotal(out);
                 break;
 
         }
@@ -270,60 +272,36 @@ public class Server {
      */
     public Server() throws IOException, ClassNotFoundException {
 
-        File file = new File(error);
-        file.createNewFile();
-        FileOutputStream fos = new FileOutputStream(file);
-        PrintStream ps = new PrintStream(fos);
-        System.setErr(ps);
+        // Create a ServerSocket and begin listening for connections
+        server = new ServerSocket(3000);
+        server2 = new ServerSocket(4000);
 
-        log = new PrintWriter(new FileWriter(logLoc, true));
-        log.append("\nStarting " + (new Date()).toString() + "\n");
-        log.flush();
-
-        if (!(new File(FIND_FOOD)).exists()) {
-            log.append("Missing find_food.py " + (new Date()).toString() + "\n");
-        } else {
-
-            // Create a ServerSocket and begin listening for connections
-            server = new ServerSocket(3000);
-            server2 = new ServerSocket(4000);
-
-            log.append("Connected " + (new Date()).toString() + "\n");
-            log.flush();
-            Runtime runtime = Runtime.getRuntime();
-            try {
-                java.lang.Process temp = runtime.exec("python2.7 " + FIND_FOOD);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            socket2 = server2.accept();
-            out2 = new DataOutputStream(socket2.getOutputStream());
-            in2 = new DataInputStream(socket2.getInputStream());
-
-            // Receive acknowledgement that Python Script is running
-            boolean x = in2.readBoolean();
-
-            log.append("Ready " + (new Date()).toString() + "\n");
-            log.flush();
-
-            //System.out.println("Ready");
-            // Listen for connections
-            listen();
-
-            // Close streams and socket relating to the Python Script
-            out2.close();
-            out2 = null;
-            in2.close();
-            in2 = null;
-            socket2.close();
-            socket2 = null;
-
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            java.lang.Process temp = runtime.exec("python2.7 " + FIND_FOOD);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        log.append("Closing Server " + (new Date()).toString() + "\n\n");
-        log.flush();
-        log.close();
+        socket2 = server2.accept();
+        DataOutputStream out2 = new DataOutputStream(socket2.getOutputStream());
+        DataInputStream in2 = new DataInputStream(socket2.getInputStream());
+
+        // Receive acknowledgement that Python Script is running
+        boolean x = in2.readBoolean();
+
+        //System.out.println("Ready");
+        // Listen for connections
+        listen(in2, out2);
+
+        // Close streams and socket relating to the Python Script
+        out2.close();
+        out2 = null;
+        in2.close();
+        in2 = null;
+        socket2.close();
+        socket2 = null;
+
     }// End Server
 
 }
