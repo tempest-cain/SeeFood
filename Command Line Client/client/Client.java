@@ -8,6 +8,7 @@ package client;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -258,15 +259,17 @@ public class Client {
     }// End Connection
 
     /**
-     * Ideal way for how the gallery using ArrayLists should be implemented in the Android client
+     * Ideal way for how the gallery using ArrayLists should be implemented in
+     * the Android client
+     *
      * @throws IOException
-     * @throws ClassNotFoundException 
+     * @throws ClassNotFoundException
      */
     private static void gallery() throws IOException, ClassNotFoundException {
-        
+
         // Get the total amount of pictures in the server database
         total = getTotal();
-        
+
         // Create an ArrayList to store all images in the database
         ArrayList<Result> imageList = new ArrayList();
 
@@ -276,7 +279,7 @@ public class Client {
         *  it will load the first 20 images and then when the scroll part tells it to load more it
         *  will load 20 more, See getPictArrayList(), you may want to implement this differently, if so
         *  we need to work on it so that nothing breaks
-        */
+         */
         while (total > 0) {
             imageList.addAll(getPictArrayList());
         }
@@ -284,7 +287,11 @@ public class Client {
         // NOT needed for app
         int y = 1;
         for (Result r : imageList) {
-            ImageIO.write(r.getImage(), "jpg", new File(PIC_STORE_LOC + "IMAGE_" + y + ".jpg"));
+
+            ByteArrayInputStream byteStream = new ByteArrayInputStream(r.getImage());
+            BufferedImage img = ImageIO.read(byteStream);
+
+            ImageIO.write(img, "jpg", new File(PIC_STORE_LOC + "IMAGE_" + y + ".jpg"));
             y++;
         }
     }

@@ -5,11 +5,8 @@
  */
 package result;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import javax.imageio.ImageIO;
 
 /**
  *
@@ -27,23 +24,33 @@ public class Result implements Serializable{
         this.conf = conf;
         this.image = image;
         
-    }
+    }// End Result()
     
+    /**
+     * Returns the value indicating whether food is present or not
+     * @return Food present or not value 
+     */
     public int getFood(){
         return this.food;
-    }
+    }// End getFood()
     
+    /**
+     * Returns the AI confidence for this picture
+     * @return AI confidence value
+     */
     public int getConf(){
         return this.conf;
-    }
+    }// End getConf()
     
-    public BufferedImage getImage() throws IOException{
-        // Create input stream and convert the bytes into a picture
-        ByteArrayInputStream byteStream = new ByteArrayInputStream(this.image);
-        BufferedImage img = ImageIO.read(byteStream);
+    /**
+     * Returns the image
+     * @return A BufferedImage containing the analyzed image in this object
+     * @throws IOException 
+     */
+    public byte[] getImage() throws IOException{
         
-        return img;
-    }
+        // Return byte array
+        return image;
+    }// End getImage()
     
 }
-

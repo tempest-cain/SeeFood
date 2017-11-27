@@ -5,11 +5,8 @@
  */
 package result;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import javax.imageio.ImageIO;
 
 /**
  *
@@ -50,12 +47,10 @@ public class Result implements Serializable{
      * @return A BufferedImage containing the analyzed image in this object
      * @throws IOException 
      */
-    public BufferedImage getImage() throws IOException{
-        // Create input stream and convert the bytes into a picture
-        ByteArrayInputStream byteStream = new ByteArrayInputStream(this.image);
-        BufferedImage img = ImageIO.read(byteStream);
+    public byte[] getImage() throws IOException{
         
-        return img;
+        // Return byte array
+        return image;
     }// End getImage()
     
 }
