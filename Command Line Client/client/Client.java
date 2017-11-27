@@ -32,7 +32,7 @@ public class Client {
     private static ObjectInputStream in = null;
     private final static String SERVER_ADDR = "34.227.5.168";
     //private final static String SERVER_ADDR = "127.0.0.1";
-    private final static String PIC_STORE_LOC = "/home/james/Desktop/ServerPICs/";
+    private static String PIC_STORE_LOC; // = "/home/james/Desktop/ServerPICs/";
     private static int total = -1;
     //private static int imageWidth = 500;
 
@@ -43,6 +43,10 @@ public class Client {
 
         // Controls program flow via a while loop
         boolean loopVal = true;
+        
+        Scanner i = new Scanner(System.in);
+        System.out.print("Enter folder path to download gallery to(NOTE be sure to end path with a /: ");
+        PIC_STORE_LOC = i.nextLine();
 
         // Print Client information
         System.out.println("Welcome to SeeFood Client version " + VERSION + "\n\n");
