@@ -1,111 +1,173 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-39:12
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-38:12
+MERGED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-alpha1.aar\745f2be4073ea5189956f6f84c677693\AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\2d059b9fd64bd4ae2351c8b16768d061\AndroidManifest.xml:2:1-11:12
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-alpha1.aar\15024f7e69297ec7352cc98b7ecc9fd9\AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-26.0.0-alpha1.aar\241912cf65605c97d08cf1e01455b154\AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-v4-26.0.0-alpha1.aar\42f641aa2644f76b2c9c4b7cc9887ecf\AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.0.0-alpha1.aar\de73a08763f8c417b41ce2113f855fd2\AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-fragment-26.0.0-alpha1.aar\df176b24fb7b782e21e1e37a6016fc60\AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-utils-26.0.0-alpha1.aar\ce831fed201c2d001484da09bf66ac86\AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-ui-26.0.0-alpha1.aar\03de1c1d21168a72736dd8c05b058025\AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-compat-26.0.0-alpha1.aar\d76d5a7ef1e7c6f01e42d94f3c53f7b3\AndroidManifest.xml:17:1-31:12
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-38:12
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-38:12
 	package
 		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:3:5-30
 		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-38:12
+		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
+	android:versionCode
+		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:1-38:12
 		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:2:11-69
-	android:versionCode
-		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:4:5-66
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:5:5-67
 	android:name
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:4:22-64
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:5:22-64
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
 ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:6:5-81
 	android:name
 		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:6:22-78
 application
-ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:8:5-37:19
-MERGED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\689f8fb868e8d0c7272e958e7426d82b02d77027\output\AndroidManifest.xml:29:5-20
-MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\70079eaa8103669b21625de7e58a7262c639c46d\output\AndroidManifest.xml:29:5-20
-MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\b2e80c22c83074d20f41e0b46f977edd1d38724d\output\AndroidManifest.xml:29:5-20
-MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\f266b78372e141ea90e360e2b837c6f17e3b0c3b\output\AndroidManifest.xml:29:5-20
-MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\2a0e5cc9d4ade10877d392f8ed8e94ec66864b4b\output\AndroidManifest.xml:29:5-20
-MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\ba0493576daebf7bd5dbebbe637982353c41e310\output\AndroidManifest.xml:29:5-20
-MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\6dc1a1f35dd4569e4aaefe6423c971e2325d3df0\output\AndroidManifest.xml:26:5-20
-MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\73993dd4adbc502eb9217ddf213e131cd9713890\output\AndroidManifest.xml:26:5-20
-MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\5c0ae9694b9e8d4ace51f983f5ccc01a0c4374e1\output\AndroidManifest.xml:29:5-20
-MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\badrm\.android\build-cache\740aa83d73ee5a4962a7548560224445e39879ed\output\AndroidManifest.xml:9:5-20
-	android:label
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:11:9-41
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:8:5-36:19
+MERGED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-alpha1.aar\745f2be4073ea5189956f6f84c677693\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-alpha1.aar\745f2be4073ea5189956f6f84c677693\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\2d059b9fd64bd4ae2351c8b16768d061\AndroidManifest.xml:9:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\2d059b9fd64bd4ae2351c8b16768d061\AndroidManifest.xml:9:5-20
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-alpha1.aar\15024f7e69297ec7352cc98b7ecc9fd9\AndroidManifest.xml:26:5-20
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-alpha1.aar\15024f7e69297ec7352cc98b7ecc9fd9\AndroidManifest.xml:26:5-20
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-26.0.0-alpha1.aar\241912cf65605c97d08cf1e01455b154\AndroidManifest.xml:26:5-20
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-26.0.0-alpha1.aar\241912cf65605c97d08cf1e01455b154\AndroidManifest.xml:26:5-20
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-v4-26.0.0-alpha1.aar\42f641aa2644f76b2c9c4b7cc9887ecf\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-v4-26.0.0-alpha1.aar\42f641aa2644f76b2c9c4b7cc9887ecf\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.0.0-alpha1.aar\de73a08763f8c417b41ce2113f855fd2\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.0.0-alpha1.aar\de73a08763f8c417b41ce2113f855fd2\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-fragment-26.0.0-alpha1.aar\df176b24fb7b782e21e1e37a6016fc60\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-fragment-26.0.0-alpha1.aar\df176b24fb7b782e21e1e37a6016fc60\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-utils-26.0.0-alpha1.aar\ce831fed201c2d001484da09bf66ac86\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-utils-26.0.0-alpha1.aar\ce831fed201c2d001484da09bf66ac86\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-ui-26.0.0-alpha1.aar\03de1c1d21168a72736dd8c05b058025\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-ui-26.0.0-alpha1.aar\03de1c1d21168a72736dd8c05b058025\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-compat-26.0.0-alpha1.aar\d76d5a7ef1e7c6f01e42d94f3c53f7b3\AndroidManifest.xml:29:5-20
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-compat-26.0.0-alpha1.aar\d76d5a7ef1e7c6f01e42d94f3c53f7b3\AndroidManifest.xml:29:5-20
 	android:supportsRtl
 		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:13:9-35
+	android:label
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:11:9-41
 	android:roundIcon
 		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:12:9-54
-	android:allowBackup
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:9:9-35
 	android:icon
 		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:10:9-43
+	android:allowBackup
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:9:9-35
 	android:theme
 		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:14:9-40
 provider#android.support.v4.content.FileProvider
-ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:19:9-27:20
-	android:authorities
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:21:13-50
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:15:9-23:20
 	android:grantUriPermissions
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:23:13-47
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:19:13-47
+	android:authorities
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:17:13-50
 	android:exported
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:22:13-37
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:18:13-37
 	android:name
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:20:13-67
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:16:13-67
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:24:13-26:64
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:20:13-22:54
 	android:resource
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:26:17-51
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:22:17-51
 	android:name
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:25:17-67
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:21:17-67
 activity#ceg4110.seefood.MainActivity
-ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:30:9-36:20
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:25:9-31:20
 	android:name
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:30:19-47
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:25:19-47
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:31:13-35:29
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:26:13-30:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:32:17-69
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:27:17-69
 	android:name
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:32:25-66
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:27:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:34:17-77
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:29:17-77
 	android:name
-		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:34:27-74
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:29:27-74
+activity#ceg4110.seefood.GalleryActivity
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:32:9-53
+	android:name
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:32:19-50
+activity#ceg4110.seefood.DisplayResult
+ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:33:9-34:20
+	android:theme
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:33:49-91
+	android:name
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml:33:19-48
 uses-sdk
 INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
-MERGED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\689f8fb868e8d0c7272e958e7426d82b02d77027\output\AndroidManifest.xml:21:5-23:78
-MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\70079eaa8103669b21625de7e58a7262c639c46d\output\AndroidManifest.xml:21:5-23:54
-MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\b2e80c22c83074d20f41e0b46f977edd1d38724d\output\AndroidManifest.xml:21:5-23:63
-MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\f266b78372e141ea90e360e2b837c6f17e3b0c3b\output\AndroidManifest.xml:21:5-23:60
-MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\2a0e5cc9d4ade10877d392f8ed8e94ec66864b4b\output\AndroidManifest.xml:21:5-23:58
-MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\ba0493576daebf7bd5dbebbe637982353c41e310\output\AndroidManifest.xml:21:5-23:61
-MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\6dc1a1f35dd4569e4aaefe6423c971e2325d3df0\output\AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\73993dd4adbc502eb9217ddf213e131cd9713890\output\AndroidManifest.xml:20:5-44
-MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\5c0ae9694b9e8d4ace51f983f5ccc01a0c4374e1\output\AndroidManifest.xml:21:5-23:58
-MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\badrm\.android\build-cache\740aa83d73ee5a4962a7548560224445e39879ed\output\AndroidManifest.xml:5:5-7:41
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
+MERGED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-alpha1.aar\745f2be4073ea5189956f6f84c677693\AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-alpha1.aar\745f2be4073ea5189956f6f84c677693\AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\2d059b9fd64bd4ae2351c8b16768d061\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.0.2.aar\2d059b9fd64bd4ae2351c8b16768d061\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-alpha1.aar\15024f7e69297ec7352cc98b7ecc9fd9\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-alpha1.aar\15024f7e69297ec7352cc98b7ecc9fd9\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-26.0.0-alpha1.aar\241912cf65605c97d08cf1e01455b154\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-26.0.0-alpha1.aar\241912cf65605c97d08cf1e01455b154\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-v4-26.0.0-alpha1.aar\42f641aa2644f76b2c9c4b7cc9887ecf\AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-v4-26.0.0-alpha1.aar\42f641aa2644f76b2c9c4b7cc9887ecf\AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.0.0-alpha1.aar\de73a08763f8c417b41ce2113f855fd2\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.0.0-alpha1.aar\de73a08763f8c417b41ce2113f855fd2\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-fragment-26.0.0-alpha1.aar\df176b24fb7b782e21e1e37a6016fc60\AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-fragment-26.0.0-alpha1.aar\df176b24fb7b782e21e1e37a6016fc60\AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-utils-26.0.0-alpha1.aar\ce831fed201c2d001484da09bf66ac86\AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-utils-26.0.0-alpha1.aar\ce831fed201c2d001484da09bf66ac86\AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-ui-26.0.0-alpha1.aar\03de1c1d21168a72736dd8c05b058025\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-ui-26.0.0-alpha1.aar\03de1c1d21168a72736dd8c05b058025\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-compat-26.0.0-alpha1.aar\d76d5a7ef1e7c6f01e42d94f3c53f7b3\AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-compat-26.0.0-alpha1.aar\d76d5a7ef1e7c6f01e42d94f3c53f7b3\AndroidManifest.xml:21:5-23:58
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
 	tools:overrideLibrary
-		ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\689f8fb868e8d0c7272e958e7426d82b02d77027\output\AndroidManifest.xml:23:9-75
+		ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-alpha1.aar\745f2be4073ea5189956f6f84c677693\AndroidManifest.xml:23:9-75
 	android:targetSdkVersion
 		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
 		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\badrm\Documents\GitHub\SeeFood\SeeFood\app\src\main\AndroidManifest.xml
 meta-data#android.support.VERSION
-ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\689f8fb868e8d0c7272e958e7426d82b02d77027\output\AndroidManifest.xml:25:5-27:41
-MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\70079eaa8103669b21625de7e58a7262c639c46d\output\AndroidManifest.xml:25:5-27:41
-MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\b2e80c22c83074d20f41e0b46f977edd1d38724d\output\AndroidManifest.xml:25:5-27:41
-MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\f266b78372e141ea90e360e2b837c6f17e3b0c3b\output\AndroidManifest.xml:25:5-27:41
-MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\2a0e5cc9d4ade10877d392f8ed8e94ec66864b4b\output\AndroidManifest.xml:25:5-27:41
-MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\ba0493576daebf7bd5dbebbe637982353c41e310\output\AndroidManifest.xml:25:5-27:41
-MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\6dc1a1f35dd4569e4aaefe6423c971e2325d3df0\output\AndroidManifest.xml:22:5-24:41
-MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\73993dd4adbc502eb9217ddf213e131cd9713890\output\AndroidManifest.xml:22:5-24:41
-MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\5c0ae9694b9e8d4ace51f983f5ccc01a0c4374e1\output\AndroidManifest.xml:25:5-27:41
+ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-alpha1.aar\745f2be4073ea5189956f6f84c677693\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-alpha1.aar\15024f7e69297ec7352cc98b7ecc9fd9\AndroidManifest.xml:22:5-24:41
+MERGED from [com.android.support:animated-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-26.0.0-alpha1.aar\15024f7e69297ec7352cc98b7ecc9fd9\AndroidManifest.xml:22:5-24:41
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-26.0.0-alpha1.aar\241912cf65605c97d08cf1e01455b154\AndroidManifest.xml:22:5-24:41
+MERGED from [com.android.support:support-vector-drawable:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-26.0.0-alpha1.aar\241912cf65605c97d08cf1e01455b154\AndroidManifest.xml:22:5-24:41
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-v4-26.0.0-alpha1.aar\42f641aa2644f76b2c9c4b7cc9887ecf\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-v4:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-v4-26.0.0-alpha1.aar\42f641aa2644f76b2c9c4b7cc9887ecf\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.0.0-alpha1.aar\de73a08763f8c417b41ce2113f855fd2\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-media-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.0.0-alpha1.aar\de73a08763f8c417b41ce2113f855fd2\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-fragment-26.0.0-alpha1.aar\df176b24fb7b782e21e1e37a6016fc60\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-fragment:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-fragment-26.0.0-alpha1.aar\df176b24fb7b782e21e1e37a6016fc60\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-utils-26.0.0-alpha1.aar\ce831fed201c2d001484da09bf66ac86\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-utils-26.0.0-alpha1.aar\ce831fed201c2d001484da09bf66ac86\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-ui-26.0.0-alpha1.aar\03de1c1d21168a72736dd8c05b058025\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-core-ui-26.0.0-alpha1.aar\03de1c1d21168a72736dd8c05b058025\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-compat-26.0.0-alpha1.aar\d76d5a7ef1e7c6f01e42d94f3c53f7b3\AndroidManifest.xml:25:5-27:41
+MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\support-compat-26.0.0-alpha1.aar\d76d5a7ef1e7c6f01e42d94f3c53f7b3\AndroidManifest.xml:25:5-27:41
 	android:value
-		ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\689f8fb868e8d0c7272e958e7426d82b02d77027\output\AndroidManifest.xml:27:9-38
+		ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-alpha1.aar\745f2be4073ea5189956f6f84c677693\AndroidManifest.xml:27:9-38
 	android:name
-		ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.android\build-cache\689f8fb868e8d0c7272e958e7426d82b02d77027\output\AndroidManifest.xml:26:9-47
+		ADDED from [com.android.support:appcompat-v7:26.0.0-alpha1] C:\Users\badrm\.gradle\caches\transforms-1\files-1.1\appcompat-v7-26.0.0-alpha1.aar\745f2be4073ea5189956f6f84c677693\AndroidManifest.xml:26:9-47

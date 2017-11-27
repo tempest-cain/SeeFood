@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -14,11 +11,11 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.File;
@@ -28,14 +25,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.ACTION_DOWN;
-import static ceg4110.seefood.R.id.image;
-import static ceg4110.seefood.R.id.parent;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,7 +40,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int READ_REQUEST_CODE = 42;
+    private static final int BACK_FROM_RESULT = 2;
+    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
 
+    Intent intent; // intent to call the GalleryActivity
+    RelativeLayout main;
+    boolean alphaModified = false;
 
     ImageView cameraButton;
     ImageView browseButton;
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        main = (RelativeLayout)findViewById(R.id.mainActivityLayout);
         cameraButton = (ImageView)findViewById(R.id.cameraButton);
         browseButton = (ImageView)findViewById(R.id.browseButton);
         galleryButton = (ImageView)findViewById(R.id.galleryButton);
@@ -107,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                 switch(event.getAction()) {
                     case ACTION_UP:
                         galleryButton.setImageResource(R.drawable.gallery);
+                        //new MyAsyncTask().execute("2");
+                        intent = new Intent(MainActivity.this, GalleryActivity.class);
                         new MyAsyncTask().execute("2");
                         break;
                     case ACTION_DOWN:
@@ -134,6 +135,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(alphaModified)
+            main.setAlpha(1);
     }
 
 
@@ -209,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
         // response to some other intent, and the code below shouldn't run at all.
 
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) { //browse
             // The document selected by the user won't be returned in the intent.
             // Instead, a URI to that document will be contained in the return intent
             // provided to this method as a parameter.
@@ -219,14 +227,15 @@ public class MainActivity extends AppCompatActivity {
                 uri = resultData.getData();
                 File image = new File(uri.getPath());
                 mCurrentPhotoPath = image.getAbsolutePath();
-                mCurrentPhotoPath = mCurrentPhotoPath.replaceAll("/document/primary:","/storage/emulated/0/"); //// FIXME: 11/20/2017 
+                mCurrentPhotoPath = mCurrentPhotoPath.replaceAll("/document/primary:","/storage/emulated/0/");//// FIXME: 11/20/2017
                 new MyAsyncTask().execute("1",mCurrentPhotoPath);
 
             }
-        } else if(requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+        } else if(requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) { //from camera
             new MyAsyncTask().execute("1",mCurrentPhotoPath);
         }
     }
+
 
     /**
      * Creates an asynchronous thread to handle communication with the server
@@ -237,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
         private ObjectOutputStream out = null;
         private ObjectInputStream in = null;
         private final static String SERVER_ADDR = "34.227.5.168";//"34.227.5.168" : "127.0.0.1"
+
         int isFood, confidence;
         int total, food, not;
 
@@ -254,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                     analyze(args[1]);
                     return 1;
                 case "2": //gallery
-                    //call function
+                    getStats();
                     return 2;
                 case "3": //statistics
                     getStats();
@@ -271,14 +281,20 @@ public class MainActivity extends AppCompatActivity {
             Toast toast;
             switch (result) {
                 case 1:
-                    message = isFood==1?"I see food! ":"Not food. " + "Confidence level: "+confidence+"%";
-                    toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-                    toast.show();
+                    Intent displayResult = new Intent(MainActivity.this, DisplayResult.class);
+                    main.setAlpha((float).5);
+                    alphaModified = true;
+                    displayResult.putExtra("isFood",isFood);
+                    displayResult.putExtra("confidence",confidence);
+                    displayResult.putExtra("imagePath",mCurrentPhotoPath);
+                    startActivity(displayResult);
                     return;
                 case 2:
-                    message = "Feature not implemented yet";
+                    message = "Loading Gallery...";
                     toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
                     toast.show();
+                    intent.putExtra("GALLERY_SIZE",total);
+                    startActivity(intent);
                     return;
                 case 3:
                     message = "Food:\t"+food+"\nNot food:\t"+not+"\nPercentage of food pictures: "+(int) ((food / (double) total) * 100);
