@@ -5,12 +5,10 @@
  */
 package client;
 
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -28,7 +26,7 @@ import result.Result;
  */
 public class Client {
 
-    private final static String VERSION = "3.2.2.2";
+    private final static String VERSION = "3.3";
     private static Socket socket = null;
     private static ObjectOutputStream out = null;
     private static ObjectInputStream in = null;
@@ -36,7 +34,7 @@ public class Client {
     //private final static String SERVER_ADDR = "127.0.0.1";
     private final static String PIC_STORE_LOC = "/home/james/Desktop/ServerPICs/";
     private static int total = -1;
-    private static int imageWidth = 500;
+    //private static int imageWidth = 500;
 
     /**
      * @param args the command line arguments
@@ -159,23 +157,26 @@ public class Client {
             out.writeInt(1);
             out.flush();
 
-            /////////////////////////
-            //
-            // Resize logic below
-            //
-            /////////////////////////
-            BufferedImage img = ImageIO.read(pict);
 
-            Image img2 = img.getScaledInstance(imageWidth, -1, Image.SCALE_SMOOTH);
-
-            BufferedImage copy = new BufferedImage(img2.getWidth(null), img2.getHeight(null), BufferedImage.TYPE_INT_RGB);
-            Graphics data = copy.createGraphics();
-            data.drawImage(img2, 0, 0, null);
-            data.dispose();
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(copy, "jpg", baos);
-            byte[] imageBytes = baos.toByteArray();
+            byte[] imageBytes = new byte[(int)pict.length()];
+            FileInputStream fis = new FileInputStream(pict);
+            
+            fis.read(imageBytes);
+            
+            
+            
+//            BufferedImage img = ImageIO.read(pict);
+//
+//            Image img2 = img.getScaledInstance(imageWidth, -1, Image.SCALE_SMOOTH);
+//
+//            BufferedImage copy = new BufferedImage(img2.getWidth(null), img2.getHeight(null), BufferedImage.TYPE_INT_RGB);
+//            Graphics data = copy.createGraphics();
+//            data.drawImage(img2, 0, 0, null);
+//            data.dispose();
+//
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            ImageIO.write(copy, "jpg", baos);
+//            byte[] imageBytes = baos.toByteArray();
 
             // Send the byte array to the Seefood Server
             out.writeObject(imageBytes);

@@ -5,8 +5,11 @@
  */
 package server;
 
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -28,9 +31,10 @@ import result.Result;
 public final class ImageAnalysis {
 
     //private final static String TOTAL_STATS_FILE_LOC = "/home/james/Desktop/Stats/";
-    //private final static String DATABASE_LOC =       "/home/james/Desktop/Stats/";
+    //private final static String DATABASE_LOC = "/home/james/Desktop/Stats/";
     private final static String TOTAL_STATS_FILE_LOC = "/home/ec2-user/stats/";
     private final static String DATABASE_LOC = "/home/ec2-user/stats/";
+    private final static int IMAGE_WIDTH = 500;
 
     /**
      * Analyzes a picture and returns the results
@@ -46,20 +50,19 @@ public final class ImageAnalysis {
         // Create TotalStats.bin if it doesnt already exist
         checkTotalStatsFile(TOTAL_STATS_FILE_LOC);
 
-        // Create input stream and convert the bytes into a picture
-        ByteArrayInputStream byteStream = new ByteArrayInputStream(byteArray);
-        BufferedImage img = ImageIO.read(byteStream);
-        
+        // Resize the picture
+        BufferedImage img = resize(byteArray);
+
         // Create a name and folder for picture
         int name = createName();
         String directory = createPictFolder(DATABASE_LOC, name);
-        
+
         // Write picture to disk
         String filename = writeImage(img, directory, name);
 
         // Call the AI to analyze the picture
         int[] result = callFindFood(filename, in2, out2);
-        
+
         // Write each result, the first [0] is whether the picture contained food or not
         // The second [1] is the confidence rating from the AI
         out.writeInt(result[0]);
@@ -69,13 +72,23 @@ public final class ImageAnalysis {
 
         // Update the overall statistics with the values from the AI
         updateTotalStatsFile(TOTAL_STATS_FILE_LOC, result[0]);
-        
+
         // Write the .image file used with the gallery functionality
-        File image = new File(directory+ name +".image");        
+        File image = new File(directory + name + ".image");
         ObjectOutputStream oout = new ObjectOutputStream(new FileOutputStream(image));
-        
-        Result imageObject = new Result(result[0], result[1], byteArray);
-        
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+
+        System.out.println(img.getWidth());
+
+        ImageIO.write(img, "jpg", bout);
+        bout.flush();
+
+        byte[] imageBytes = bout.toByteArray();
+        bout.close();
+
+        Result imageObject = new Result(result[0], result[1], imageBytes);
+
         oout.writeObject(imageObject);
         oout.flush();
         oout.close();
@@ -107,7 +120,7 @@ public final class ImageAnalysis {
 
         // Receive confirmation of complete operation from find_food.py
         in2.readBoolean();
-        
+
         return result;
 
     }// End callFindFood()
@@ -295,8 +308,8 @@ public final class ImageAnalysis {
      *
      * @param image Picture to write
      * @param folderPath Folder to write picture to
-     * @param name Name of newly created picture excluding extension as
-     * this method converts/stores picture as jpg
+     * @param name Name of newly created picture excluding extension as this
+     * method converts/stores picture as jpg
      * @return Location of the newly created picture
      * @throws IOException
      */
@@ -309,5 +322,25 @@ public final class ImageAnalysis {
         return fileLocation;
 
     }// End writeImage()
+
+    /**
+     * Resizes the picture
+     *
+     * @param img Picture to remove alpha channel from
+     * @return BufferedImage of picture without an alpha channel
+     */
+    public BufferedImage resize(byte[] byteArray) throws IOException {
+
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(byteArray));
+
+        Image img2 = img.getScaledInstance(IMAGE_WIDTH, -1, Image.SCALE_SMOOTH);
+
+        BufferedImage copy = new BufferedImage(img2.getWidth(null), img2.getHeight(null), BufferedImage.TYPE_INT_RGB);
+        Graphics g = copy.createGraphics();
+        g.drawImage(img2, 0, 0, null);
+        g.dispose();
+
+        return copy;
+    }// End removeAlpha()
 
 }

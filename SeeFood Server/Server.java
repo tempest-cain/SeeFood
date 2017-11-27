@@ -24,7 +24,7 @@ import result.Result;
  */
 public class Server {
 
-    private final String VERSION = "See-0.1.6_Beta";
+    private final String VERSION = "See-0.1.8_Beta";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
