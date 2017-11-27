@@ -1,4 +1,0 @@
-#Thu Nov 16 03:32:17 EST 2017
-base.0=C\:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_7
-renamed.0=classes.dex
-file.0=C\:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_7\\classes.dex

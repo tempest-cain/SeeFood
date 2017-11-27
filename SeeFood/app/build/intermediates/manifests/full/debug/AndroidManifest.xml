@@ -17,10 +17,12 @@
 
     <application
         android:allowBackup="true"
+        android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:testOnly="true"
         android:theme="@style/AppTheme" >
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -38,6 +40,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name="ceg4110.seefood.GalleryActivity" />
+        <activity
+            android:name="ceg4110.seefood.DisplayResult"
+            android:theme="@style/AppTheme.PopupTheme" >
         </activity>
     </application>
 

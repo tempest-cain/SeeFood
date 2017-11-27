@@ -1,7 +1,0 @@
-#Mon Nov 20 17:36:20 EST 2017
-base.0=C\:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_6a5b856b0b134b9b6610fd5481ed3b2429907ffd
-renamed.1=classes2.dex
-renamed.0=classes.dex
-file.1=C\:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_fcc7f04c10366d0d443df4724c158caa9c46c4d5\\classes.dex
-base.1=C\:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_fcc7f04c10366d0d443df4724c158caa9c46c4d5
-file.0=C\:\\Users\\badrm\\Documents\\GitHub\\SeeFood\\SeeFood\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_6a5b856b0b134b9b6610fd5481ed3b2429907ffd\\classes.dex
