@@ -32,7 +32,7 @@ public class Client {
     private static ObjectInputStream in = null;
     private final static String SERVER_ADDR = "34.227.5.168";
     //private final static String SERVER_ADDR = "127.0.0.1";
-    private static String PIC_STORE_LOC; // = "/home/james/Desktop/ServerPICs/";
+    private static String PIC_STORE_LOC = "/home/james/Desktop/ServerPICs/";
     private static int total = -1;
     //private static int imageWidth = 500;
 
@@ -44,9 +44,9 @@ public class Client {
         // Controls program flow via a while loop
         boolean loopVal = true;
         
-        Scanner i = new Scanner(System.in);
-        System.out.print("Enter folder path to download gallery to(NOTE be sure to end path with a /: ");
-        PIC_STORE_LOC = i.nextLine();
+//        Scanner i = new Scanner(System.in);
+//        System.out.print("Enter folder path to download gallery to(NOTE be sure to end path with a /: ");
+//        PIC_STORE_LOC = i.nextLine();
 
         // Print Client information
         System.out.println("Welcome to SeeFood Client version " + VERSION + "\n\n");
@@ -166,21 +166,8 @@ public class Client {
             FileInputStream fis = new FileInputStream(pict);
             
             fis.read(imageBytes);
-            
-            
-            
-//            BufferedImage img = ImageIO.read(pict);
-//
-//            Image img2 = img.getScaledInstance(imageWidth, -1, Image.SCALE_SMOOTH);
-//
-//            BufferedImage copy = new BufferedImage(img2.getWidth(null), img2.getHeight(null), BufferedImage.TYPE_INT_RGB);
-//            Graphics data = copy.createGraphics();
-//            data.drawImage(img2, 0, 0, null);
-//            data.dispose();
-//
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            ImageIO.write(copy, "jpg", baos);
-//            byte[] imageBytes = baos.toByteArray();
+            fis.close();
+
 
             // Send the byte array to the Seefood Server
             out.writeObject(imageBytes);

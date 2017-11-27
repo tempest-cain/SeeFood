@@ -331,8 +331,8 @@ public final class ImageAnalysis {
      */
     public BufferedImage resize(byte[] byteArray) throws IOException {
 
-        BufferedImage img = ImageIO.read(new ByteArrayInputStream(byteArray));
-
+        BufferedImage img = ImageIO.read(new ByteArrayInputStream(byteArray));        
+        
         Image img2 = img.getScaledInstance(IMAGE_WIDTH, -1, Image.SCALE_SMOOTH);
 
         BufferedImage copy = new BufferedImage(img2.getWidth(null), img2.getHeight(null), BufferedImage.TYPE_INT_RGB);
