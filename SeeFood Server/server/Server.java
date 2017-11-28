@@ -24,15 +24,15 @@ import result.Result;
  */
 public class Server {
 
-    private final String VERSION = "See-0.1.9_Beta";
+    private final String VERSION = "See-0.2_Beta";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
     private Socket socket2 = null;
-    private static final String FIND_FOOD = "/home/ec2-user/seefood-core-ai/find_food.py";
-    //private static final String FIND_FOOD = "/home/james/Desktop/find_food.py";
-    private static final String IMAGE_FOLDER = "/home/ec2-user/stats/";
-    //private static final String IMAGE_FOLDER = "/home/james/Desktop/Stats/";
+    //private static final String FIND_FOOD = "/home/ec2-user/seefood-core-ai/find_food.py";
+    private static final String FIND_FOOD = "/home/james/Desktop/find_food.py";
+    //private static final String IMAGE_FOLDER = "/home/ec2-user/stats/";
+    private static final String IMAGE_FOLDER = "/home/james/Desktop/stats/";
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
 
@@ -47,12 +47,30 @@ public class Server {
     public void analyze(ObjectInputStream in, ObjectOutputStream out, DataInputStream in2, DataOutputStream out2) throws IOException, ClassNotFoundException {
 
         // Byte array to store picture sent from Client
-        byte[] byteArray = (byte[]) in.readObject();
+        ArrayList<byte[]> imageList = (ArrayList<byte[]>) in.readObject();
+        ArrayList<int[]> resultList = new ArrayList();
+
+        // Create instance of class that analyzes picture
+        ImageAnalysis analyze = new ImageAnalysis();
+
+        System.out.println(imageList.size());   // DELETE
+
+        int i = 0; //DELETE
+        for (byte[] imageBytes : imageList) {
+
+            // Store result
+            resultList.add(analyze.analyze(imageBytes, out, in2, out2));
+
+            System.out.println(resultList.get(i)[0]);   //DELETE
+            System.out.println(resultList.get(i)[1]);   //DELETE
+            ++i; //DELETE
+        }
+
+        out.writeObject(resultList);
 
         // Create instance of class that analyzes picture and call its analyze method and store results
-        ImageAnalysis analyze = new ImageAnalysis();
-        analyze.analyze(byteArray, out, in2, out2);
-
+        //ImageAnalysis analyze = new ImageAnalysis();
+        //analyze.analyze(byteArray, out, in2, out2);
     }// End analyze()
 
     /**
@@ -134,8 +152,9 @@ public class Server {
 
     /**
      * Sends the total files in DB to client
+     *
      * @param out Output channel to client
-     * @throws IOException 
+     * @throws IOException
      */
     public void getTotal(ObjectOutputStream out) throws IOException {
 
@@ -253,7 +272,7 @@ public class Server {
             case 7:
                 deleteDB(out);
                 break;
-                
+
             case 8:
                 getTotal(out);
                 break;

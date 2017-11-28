@@ -26,12 +26,12 @@ import result.Result;
  */
 public class Client {
 
-    private final static String VERSION = "3.3";
+    private final static String VERSION = "3.4";
     private static Socket socket = null;
     private static ObjectOutputStream out = null;
     private static ObjectInputStream in = null;
-    private final static String SERVER_ADDR = "34.227.5.168";
-    //private final static String SERVER_ADDR = "127.0.0.1";
+    //private final static String SERVER_ADDR = "34.227.5.168";
+    private final static String SERVER_ADDR = "127.0.0.1";
     private static String PIC_STORE_LOC = "/home/james/Desktop/ServerPICs/";
     private static int total = -1;
     //private static int imageWidth = 500;
@@ -43,11 +43,10 @@ public class Client {
 
         // Controls program flow via a while loop
         boolean loopVal = true;
-        
+
 //        Scanner i = new Scanner(System.in);
 //        System.out.print("Enter folder path to download gallery to(NOTE be sure to end path with a /: ");
 //        PIC_STORE_LOC = i.nextLine();
-
         // Print Client information
         System.out.println("Welcome to SeeFood Client version " + VERSION + "\n\n");
 
@@ -62,7 +61,8 @@ public class Client {
                     + "4) Exit Client           \n"
                     + "5) Kill Server           \n"
                     + "6) Versions              \n"
-                    + "7) Delete Database       \n\n"
+                    + "7) Delete Database       \n"
+                    + "8) MultiImage Analyze    \n\n"
                     + "Make selection and press enter\n\n"
                     + ">");
 
@@ -79,7 +79,7 @@ public class Client {
             // Process user choice
             switch (choice) {
                 case 1:
-                    analyze();      // Implemented
+                    analyze(1);      // Implemented
                     break;
                 case 2:
                     gallery();      // Implemented
@@ -100,6 +100,10 @@ public class Client {
                 case 7:
                     deleteDB();     // Implemented
                     break;
+                case 8:
+                    System.out.print("How many images to analyze: ");
+                    analyze(input.nextInt());
+                    break;
 
                 // Used if choice entered is invalid
                 default:
@@ -118,7 +122,7 @@ public class Client {
      *
      * @throws IOException
      */
-    private static void analyze() throws IOException {
+    private static void analyze(int x) throws IOException, ClassNotFoundException {
 
         establishConnection();
 
@@ -128,12 +132,15 @@ public class Client {
             // Define a File object to later store the picture filename
             File pict = null;
 
+            int i = 0;
+            Scanner userInput = new Scanner(System.in);
+            ArrayList<byte[]> imageList = new ArrayList();
+
             // Loop to control user input of filename
-            while (true) {
+            while (true && i < x) {
 
                 // Accept and process user input
                 System.out.print("Enter filename of picture to analyze or type menu: ");
-                Scanner userInput = new Scanner(System.in);
                 String pictureLoc = userInput.nextLine();
 
                 // Allows user to return to menu instead of selecting a picture
@@ -143,17 +150,29 @@ public class Client {
 
                 // Create File object and test if the filename exists
                 pict = new File(pictureLoc);
-                if (pict.exists()) {
+                if (!pict.exists()) {
 
-                    // Aid with garbage collection of Scanner object as it is no longer need beyond this point
-                    userInput = null;
-                    break;
+                    // Alert user that the filename specified does not exist and loop cycles again
+                    System.out.println("\n\n***File does not exist***\n\n");
+
+                } else {
+
+                    byte[] imageBytes = new byte[(int) pict.length()];
+                    FileInputStream fis = new FileInputStream(pict);
+
+                    fis.read(imageBytes);
+                    fis.close();
+
+                    imageList.add(imageBytes);
+                    
+                    ++i;
+                    
                 }
 
-                // Alert user that the filename specified does not exist and loop cycles again
-                System.out.println("\n\n***File does not exist***\n\n");
-
             }
+
+            // Aid with garbage collection of Scanner object as it is no longer need beyond this point
+            userInput = null;
 
             // Alert user that the server is analyzing the selected picture
             System.out.println("Analyzing");
@@ -161,25 +180,20 @@ public class Client {
             out.writeInt(1);
             out.flush();
 
-
-            byte[] imageBytes = new byte[(int)pict.length()];
-            FileInputStream fis = new FileInputStream(pict);
-            
-            fis.read(imageBytes);
-            fis.close();
-
-
             // Send the byte array to the Seefood Server
-            out.writeObject(imageBytes);
+            out.writeObject(imageList);
             out.flush();
 
             // Wait for the SeeFood Server to send back results
-            int isFood = in.readInt();
-            int confidence = in.readInt();
-
+            ArrayList<int[]> resultList = (ArrayList<int[]>)in.readObject();
+            
+            for(int[] xz : resultList){
+            
             // Print the received results
-            System.out.println("\n\nIs food:    " + isFood + "\n" + "Confidence: " + confidence);
+            System.out.println("\n\nIs food:    " + xz[0] + "\n" + "Confidence: " + xz[1]);
             System.out.println("\n\n");
+            
+            }
 
         } catch (ConnectException ex) {
             System.out.println("\n\nNot connected to SeeFood server\n\n");

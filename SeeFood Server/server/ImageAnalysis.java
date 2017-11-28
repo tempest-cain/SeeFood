@@ -6,6 +6,7 @@
 package server;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -30,10 +31,10 @@ import result.Result;
  */
 public final class ImageAnalysis {
 
-    //private final static String TOTAL_STATS_FILE_LOC = "/home/james/Desktop/stats/";
-    //private final static String DATABASE_LOC = "/home/james/Desktop/stats/";
-    private final static String TOTAL_STATS_FILE_LOC = "/home/ec2-user/stats/";
-    private final static String DATABASE_LOC = "/home/ec2-user/stats/";
+    private final static String TOTAL_STATS_FILE_LOC = "/home/james/Desktop/stats/";
+    private final static String DATABASE_LOC = "/home/james/Desktop/stats/";
+    //private final static String TOTAL_STATS_FILE_LOC = "/home/ec2-user/stats/";
+    //private final static String DATABASE_LOC = "/home/ec2-user/stats/";
     private final static int IMAGE_WIDTH = 500;
 
     /**
@@ -45,7 +46,7 @@ public final class ImageAnalysis {
      * @param out2 Output stream to the AI
      * @throws IOException
      */
-    public void analyze(byte[] byteArray, ObjectOutputStream out, DataInputStream in2, DataOutputStream out2) throws IOException {
+    public int[] analyze(byte[] byteArray, ObjectOutputStream out, DataInputStream in2, DataOutputStream out2) throws IOException {
 
         // Create TotalStats.bin if it doesnt already exist
         checkTotalStatsFile(TOTAL_STATS_FILE_LOC);
@@ -65,10 +66,10 @@ public final class ImageAnalysis {
 
         // Write each result, the first [0] is whether the picture contained food or not
         // The second [1] is the confidence rating from the AI
-        out.writeInt(result[0]);
-        out.flush();
-        out.writeInt(result[1]);
-        out.flush();
+//        out.writeInt(result[0]);
+//        out.flush();
+//        out.writeInt(result[1]);
+//        out.flush();
 
         // Update the overall statistics with the values from the AI
         updateTotalStatsFile(TOTAL_STATS_FILE_LOC, result[0]);
@@ -78,8 +79,6 @@ public final class ImageAnalysis {
         ObjectOutputStream oout = new ObjectOutputStream(new FileOutputStream(image));
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-
-        System.out.println(img.getWidth());
 
         ImageIO.write(img, "jpg", bout);
         bout.flush();
@@ -93,6 +92,8 @@ public final class ImageAnalysis {
         oout.flush();
         oout.close();
 
+        return result;
+        
     }// End analyze()
 
     /**
@@ -333,10 +334,10 @@ public final class ImageAnalysis {
 
         BufferedImage img = ImageIO.read(new ByteArrayInputStream(byteArray));        
         
-        Image img2 = img.getScaledInstance(IMAGE_WIDTH, -1, Image.SCALE_SMOOTH);
+        Image img2 = img.getScaledInstance(IMAGE_WIDTH, -1, Image.SCALE_FAST);
 
         BufferedImage copy = new BufferedImage(img2.getWidth(null), img2.getHeight(null), BufferedImage.TYPE_INT_RGB);
-        Graphics g = copy.createGraphics();
+        Graphics2D g = copy.createGraphics();
         g.drawImage(img2, 0, 0, null);
         g.dispose();
 
