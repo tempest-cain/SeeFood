@@ -24,15 +24,15 @@ import result.Result;
  */
 public class Server {
 
-    private final String VERSION = "See-0.2_Beta";
+    private final String VERSION = "See-0.2.1_Beta";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
     private Socket socket2 = null;
-    //private static final String FIND_FOOD = "/home/ec2-user/seefood-core-ai/find_food.py";
-    private static final String FIND_FOOD = "/home/james/Desktop/find_food.py";
-    //private static final String IMAGE_FOLDER = "/home/ec2-user/stats/";
-    private static final String IMAGE_FOLDER = "/home/james/Desktop/stats/";
+    private static final String FIND_FOOD = "/home/ec2-user/seefood-core-ai/find_food.py";
+    //private static final String FIND_FOOD = "/home/james/Desktop/find_food.py";
+    private static final String IMAGE_FOLDER = "/home/ec2-user/stats/";
+    //private static final String IMAGE_FOLDER = "/home/james/Desktop/stats/";
     private ObjectOutputStream out = null;
     private ObjectInputStream in = null;
 

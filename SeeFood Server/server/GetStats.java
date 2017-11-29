@@ -17,8 +17,8 @@ import java.io.IOException;
  */
 public final class GetStats {
 
-    //private final static String TOTAL_STATS_FILE = "/home/ec2-user/stats/TotalStats.bin";
-    private final static String TOTAL_STATS_FILE = "/home/james/Desktop/stats/TotalStats.bin";
+    private final static String TOTAL_STATS_FILE = "/home/ec2-user/stats/TotalStats.bin";
+    //private final static String TOTAL_STATS_FILE = "/home/james/Desktop/stats/TotalStats.bin";
 
     /**
      * Constructor

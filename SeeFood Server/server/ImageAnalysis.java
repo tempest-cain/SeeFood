@@ -5,7 +5,6 @@
  */
 package server;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -31,10 +30,10 @@ import result.Result;
  */
 public final class ImageAnalysis {
 
-    private final static String TOTAL_STATS_FILE_LOC = "/home/james/Desktop/stats/";
-    private final static String DATABASE_LOC = "/home/james/Desktop/stats/";
-    //private final static String TOTAL_STATS_FILE_LOC = "/home/ec2-user/stats/";
-    //private final static String DATABASE_LOC = "/home/ec2-user/stats/";
+    //private final static String TOTAL_STATS_FILE_LOC = "/home/james/Desktop/stats/";
+    //private final static String DATABASE_LOC = "/home/james/Desktop/stats/";
+    private final static String TOTAL_STATS_FILE_LOC = "/home/ec2-user/stats/";
+    private final static String DATABASE_LOC = "/home/ec2-user/stats/";
     private final static int IMAGE_WIDTH = 500;
 
     /**
