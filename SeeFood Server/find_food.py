@@ -59,8 +59,12 @@ while(loop):
     # Work in RGBA space (A=alpha) since png's come in as RGBA, jpeg come in as RGB
     # so convert everything to RGBA and then to RGB.
 
-        image = Image.open(image_path)  # .convert('RGB')
+        image = Image.open(image_path).convert('RGB')
         image = image.resize((227, 227), Image.BILINEAR)
+
+
+        
+
         img_tensor = [np.asarray(image, dtype=np.float32)]
     except Exception:
         break
@@ -80,13 +84,12 @@ while(loop):
     f.write(struct.pack(">i", confidence))
     f.flush()
 
-    # Confirm that find_food executed correctly to server
-    f.write(struct.pack(">b", True))
-    f.flush()
+    ip = image_path + ".jpg"
+    image.save(ip)    
 
     # Create filename of results file to create
-    path = image_path[0:-3]
-    path = path + "bin"
+    #path = image_path[0:-3]
+    path = image_path + ".bin"
 
     # Actual Results file, binary file
     file = open(path, "wb")
@@ -98,3 +101,6 @@ while(loop):
     file.close()
 
 
+    # Confirm that find_food executed correctly to server
+    f.write(struct.pack(">b", True))
+    f.flush()

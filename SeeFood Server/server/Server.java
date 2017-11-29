@@ -24,7 +24,7 @@ import result.Result;
  */
 public class Server {
 
-    private final String VERSION = "See-0.2.1_Beta";
+    private final String VERSION = "See-0.2.7_Beta";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
@@ -53,24 +53,17 @@ public class Server {
         // Create instance of class that analyzes picture
         ImageAnalysis analyze = new ImageAnalysis();
 
-        System.out.println(imageList.size());   // DELETE
-
-        int i = 0; //DELETE
+        // Process each image
         for (byte[] imageBytes : imageList) {
 
+            
             // Store result
             resultList.add(analyze.analyze(imageBytes, out, in2, out2));
 
-            System.out.println(resultList.get(i)[0]);   //DELETE
-            System.out.println(resultList.get(i)[1]);   //DELETE
-            ++i; //DELETE
         }
-
+        // Send arraylist to client
         out.writeObject(resultList);
 
-        // Create instance of class that analyzes picture and call its analyze method and store results
-        //ImageAnalysis analyze = new ImageAnalysis();
-        //analyze.analyze(byteArray, out, in2, out2);
     }// End analyze()
 
     /**
@@ -96,31 +89,30 @@ public class Server {
      */
     public void getPictArray() throws IOException, ClassNotFoundException {
 
+        // Get total number of saved pictures
+        int total = GetStats.getTotalStats()[0];
+        
         // Arraylist to hold image objects containing the image and its stats
         ArrayList<Result> al = new ArrayList();
-
-        // Get image number/name to start with, HIGHER number is more recent image
-        int sendImageNo = in.readInt();
-
-        // Read 20 images/stats into the Arraylist
-        for (int i = 0; i < 20 && sendImageNo > 0; ++i, --sendImageNo) {
-
-            File fi = new File(IMAGE_FOLDER + sendImageNo + "/" + sendImageNo + ".image");
+        
+        // Add every image to arraylist to send to client
+        while(total > 0){
+            
+            File fi = new File(IMAGE_FOLDER + total + "/" + total + ".image");
 
             ObjectInputStream oin = new ObjectInputStream(new FileInputStream(fi));
 
             al.add((Result) oin.readObject());
-
+            
+            oin.close();
+            
+            --total;
         }
 
         // Send arraylist containing part of the Gallery to the client
         out.writeObject(al);
         out.flush();
-
-        // Send the size of the arraylist to the client
-        out.writeInt(al.size());
-        out.flush();
-
+        
     }// End gallery()
 
     /**
@@ -162,7 +154,7 @@ public class Server {
         out.writeInt(GetStats.getTotalStats()[0]);
         out.flush();
 
-    }
+    }// End getTotal()
 
     /**
      * Sends the SeeFood Server version number to the Client
@@ -194,13 +186,16 @@ public class Server {
 
             // Listen for and accept Client connection
             socket = server.accept();
-
+            //socket.setSoTimeout(3000);
+                        
             // Begin interaction with Client
             try {
                 // Create input and output stream for this connection
                 out = new ObjectOutputStream(socket.getOutputStream());
                 in = new ObjectInputStream(socket.getInputStream());
 
+                
+                
                 run = options(in2, out2);
             } catch (Exception ex) {
                 //Dont crash server if client crashes
@@ -309,7 +304,6 @@ public class Server {
         // Receive acknowledgement that Python Script is running
         boolean x = in2.readBoolean();
 
-        //System.out.println("Ready");
         // Listen for connections
         listen(in2, out2);
 

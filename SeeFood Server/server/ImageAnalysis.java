@@ -5,11 +5,6 @@
  */
 package server;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -20,7 +15,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import result.Result;
 
 /**
@@ -34,7 +28,6 @@ public final class ImageAnalysis {
     //private final static String DATABASE_LOC = "/home/james/Desktop/stats/";
     private final static String TOTAL_STATS_FILE_LOC = "/home/ec2-user/stats/";
     private final static String DATABASE_LOC = "/home/ec2-user/stats/";
-    private final static int IMAGE_WIDTH = 500;
 
     /**
      * Analyzes a picture and returns the results
@@ -45,52 +38,44 @@ public final class ImageAnalysis {
      * @param out2 Output stream to the AI
      * @throws IOException
      */
-    public int[] analyze(byte[] byteArray, ObjectOutputStream out, DataInputStream in2, DataOutputStream out2) throws IOException {
-
+    public int[] analyze(byte[] byteArray, ObjectOutputStream out, DataInputStream in2, DataOutputStream out2) throws IOException, ClassNotFoundException {
+        
         // Create TotalStats.bin if it doesnt already exist
         checkTotalStatsFile(TOTAL_STATS_FILE_LOC);
-
-        // Resize the picture
-        BufferedImage img = resize(byteArray);
 
         // Create a name and folder for picture
         int name = createName();
         String directory = createPictFolder(DATABASE_LOC, name);
 
         // Write picture to disk
-        String filename = writeImage(img, directory, name);
-
+        String filename = writeImage(byteArray, directory, name);        
+        
         // Call the AI to analyze the picture
         int[] result = callFindFood(filename, in2, out2);
-
-        // Write each result, the first [0] is whether the picture contained food or not
-        // The second [1] is the confidence rating from the AI
-//        out.writeInt(result[0]);
-//        out.flush();
-//        out.writeInt(result[1]);
-//        out.flush();
-
+        
         // Update the overall statistics with the values from the AI
         updateTotalStatsFile(TOTAL_STATS_FILE_LOC, result[0]);
-
-        // Write the .image file used with the gallery functionality
-        File image = new File(directory + name + ".image");
-        ObjectOutputStream oout = new ObjectOutputStream(new FileOutputStream(image));
-
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-
-        ImageIO.write(img, "jpg", bout);
-        bout.flush();
-
-        byte[] imageBytes = bout.toByteArray();
-        bout.close();
-
+        
+        
+        File jpg = new File(filename + ".jpg");
+        
+        FileInputStream fis = new FileInputStream(jpg);
+        
+        // Writes Result object to folder for faster access when returning the gallery
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(filename+".image")));
+        
+        byte[] imageBytes = new byte[(int)jpg.length()];
+        fis.read(imageBytes);
+        fis.close();
+        
+        // Create Result object
         Result imageObject = new Result(result[0], result[1], imageBytes);
 
-        oout.writeObject(imageObject);
-        oout.flush();
-        oout.close();
-
+        oos.writeObject(imageObject);
+        oos.flush();
+        oos.close();
+        
+        // Return int[] containing results of analysis
         return result;
         
     }// End analyze()
@@ -292,13 +277,9 @@ public final class ImageAnalysis {
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                //System.out.println("TotalStats.bin is CORRUPTED");
+                    ;
             }
 
-        } else {
-
-            // Print error message
-            //System.out.println("File or Folder does NOT exist, terminating...");
         }
 
     }// End updateTotalStatsFile()
@@ -313,34 +294,19 @@ public final class ImageAnalysis {
      * @return Location of the newly created picture
      * @throws IOException
      */
-    public String writeImage(BufferedImage image, String folderPath, long name) throws IOException {
+    public String writeImage(byte[] byteArray, String folderPath, long name) throws IOException {
 
         // Create the filename and write picture to the disk
-        String fileLocation = folderPath + name + ".jpg";
-        ImageIO.write(image, "jpg", new File(fileLocation));
+        String fileLocation = folderPath + name;
+                
+        FileOutputStream fo = new FileOutputStream(new File(fileLocation));
+        fo.write(byteArray);
+        fo.flush();
+        fo.close();
 
         return fileLocation;
 
     }// End writeImage()
 
-    /**
-     * Resizes the picture
-     *
-     * @param img Picture to remove alpha channel from
-     * @return BufferedImage of picture without an alpha channel
-     */
-    public BufferedImage resize(byte[] byteArray) throws IOException {
-
-        BufferedImage img = ImageIO.read(new ByteArrayInputStream(byteArray));        
-        
-        Image img2 = img.getScaledInstance(IMAGE_WIDTH, -1, Image.SCALE_FAST);
-
-        BufferedImage copy = new BufferedImage(img2.getWidth(null), img2.getHeight(null), BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = copy.createGraphics();
-        g.drawImage(img2, 0, 0, null);
-        g.dispose();
-
-        return copy;
-    }// End removeAlpha()
 
 }

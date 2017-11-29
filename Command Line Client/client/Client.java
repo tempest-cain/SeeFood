@@ -26,15 +26,14 @@ import result.Result;
  */
 public class Client {
 
-    private final static String VERSION = "3.4";
+    private final static String VERSION = "3.6";
     private static Socket socket = null;
     private static ObjectOutputStream out = null;
     private static ObjectInputStream in = null;
     private final static String SERVER_ADDR = "34.227.5.168";
     //private final static String SERVER_ADDR = "127.0.0.1";
-    private static String PIC_STORE_LOC = "/home/james/Desktop/ServerPICs/";
+    private static String PIC_STORE_LOC; // = "/home/james/Desktop/ServerPICs/";
     private static int total = -1;
-    //private static int imageWidth = 500;
 
     /**
      * @param args the command line arguments
@@ -44,6 +43,7 @@ public class Client {
         // Controls program flow via a while loop
         boolean loopVal = true;
 
+        // Get user input for number of images to analyze
         Scanner i = new Scanner(System.in);
         System.out.print("Enter folder path to download gallery to(NOTE be sure to end path with a /: ");
         PIC_STORE_LOC = i.nextLine();
@@ -125,7 +125,7 @@ public class Client {
     private static void analyze(int x) throws IOException, ClassNotFoundException {
 
         establishConnection();
-
+        
         // Catch an exception that is thrown if the Client is not connected to the SeeFood Server
         try {
 
@@ -135,7 +135,7 @@ public class Client {
             int i = 0;
             Scanner userInput = new Scanner(System.in);
             ArrayList<byte[]> imageList = new ArrayList();
-
+            
             // Loop to control user input of filename
             while (true && i < x) {
 
@@ -157,6 +157,7 @@ public class Client {
 
                 } else {
 
+                    // Add image to arraylist
                     byte[] imageBytes = new byte[(int) pict.length()];
                     FileInputStream fis = new FileInputStream(pict);
 
@@ -169,14 +170,12 @@ public class Client {
                     
                 }
 
-            }
+            }// End while
 
             // Aid with garbage collection of Scanner object as it is no longer need beyond this point
             userInput = null;
 
-            // Alert user that the server is analyzing the selected picture
-            System.out.println("Analyzing");
-
+            // Send analyze command to server
             out.writeInt(1);
             out.flush();
 
@@ -184,9 +183,12 @@ public class Client {
             out.writeObject(imageList);
             out.flush();
 
-            // Wait for the SeeFood Server to send back results
+            // Get the results from server
             ArrayList<int[]> resultList = (ArrayList<int[]>)in.readObject();
             
+            
+            
+            //NOT NEEDED FOR APP
             for(int[] xz : resultList){
             
             // Print the received results
@@ -273,30 +275,25 @@ public class Client {
      */
     private static void gallery() throws IOException, ClassNotFoundException {
 
-        // Get the total amount of pictures in the server database
-        total = getTotal();
-
+        establishConnection();
+        
         // Create an ArrayList to store all images in the database
-        ArrayList<Result> imageList = new ArrayList();
+        ArrayList<Result> imageList;
 
-        /* Keep adding images to ArrayList until all have been received
-        *  NOTE this is where there will be a big difference between this and the Android app
-        *  On the app when the user selects the gallery in the app get the total first, then as you scroll
-        *  it will load the first 20 images and then when the scroll part tells it to load more it
-        *  will load 20 more, See getPictArrayList(), you may want to implement this differently, if so
-        *  we need to work on it so that nothing breaks
-         */
-        while (total > 0) {
-            imageList.addAll(getPictArrayList());
-        }
-
+        
+        // gET RESULTS LIST FROM SERVER        
+        imageList = getPictArrayList();
+        
+        endConnection();        
+        
+                
         // NOT needed for app
         int y = 1;
         for (Result r : imageList) {
 
             ByteArrayInputStream byteStream = new ByteArrayInputStream(r.getImage());
             BufferedImage img = ImageIO.read(byteStream);
-
+            
             ImageIO.write(img, "jpg", new File(PIC_STORE_LOC + "IMAGE_" + y + ".jpg"));
             y++;
         }
@@ -310,7 +307,6 @@ public class Client {
      */
     private static ArrayList<Result> getPictArrayList() throws IOException, ClassNotFoundException {
 
-        establishConnection();
         ArrayList<Result> al = null;
 
         try {
@@ -319,28 +315,13 @@ public class Client {
             out.writeInt(2);
             out.flush();
 
-            // Tell server to begin sending picture objects starting with the most recent
-            out.writeInt(total);
-            out.flush();
-
-            // Read each picture object into an ArrayList
-            // The ArrayList returned will either have 20 elements or if there are
-            // less than 20 needing to be sent the ArrayList will have the same number
-            // of elements as there are picture objects still needing to be downloaded
-            // on the server, ex. if there are 6 pictures on the server, then the ArrayList
-            // returned from the server will contain 6 elements
+            // Receive arraylist from server
             al = (ArrayList<Result>) in.readObject();
-            int alistSize = in.readInt();
 
-            // Update total variable to tell client how many picture objects still need to be downloaded
-            // total is a member(class variable)
-            total -= alistSize;
 
         } catch (ConnectException ex) {
             System.out.println("Not connected to SeeFood server\n\n");
         }
-
-        endConnection();
 
         // Return the ArrayList
         return al;
@@ -423,6 +404,7 @@ public class Client {
             out.flush();
 
             // Print the version numbers of the Client and SeeFood Server
+            // NOT NEEDED for app
             System.out.println("\n\nVersion Numbers\n---------------");
             System.out.println("Client: " + VERSION);
             System.out.println("Server: " + in.readUTF());
@@ -454,11 +436,11 @@ public class Client {
 
             out.writeInt(5);
             out.flush();
-            System.out.println("Server dead, client exiting...\n\n");
+            //System.out.println("Server dead, client exiting...\n\n");
             keepAlive = false;
 
         } catch (ConnectException ex) {
-            System.out.println("Not connected to SeeFood server\n\n");
+            //System.out.println("Not connected to SeeFood server\n\n");
             keepAlive = true;
 
         }
