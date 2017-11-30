@@ -102,7 +102,7 @@ public final class ImageAnalysis {
         int[] result = new int[2];
         result[0] = in2.readInt();
         result[1] = in2.readInt();
-
+        
         // Receive confirmation of complete operation from find_food.py
         in2.readBoolean();
 

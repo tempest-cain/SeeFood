@@ -24,7 +24,7 @@ import result.Result;
  */
 public class Server {
 
-    private final String VERSION = "See-0.2.7_Beta";
+    private final String VERSION = "See-1.0";
     private ServerSocket server = null;
     private ServerSocket server2 = null;
     private Socket socket = null;
@@ -56,6 +56,9 @@ public class Server {
         // Process each image
         for (byte[] imageBytes : imageList) {
 
+            if(imageBytes.length == 0){
+                continue;
+            }
             
             // Store result
             resultList.add(analyze.analyze(imageBytes, out, in2, out2));

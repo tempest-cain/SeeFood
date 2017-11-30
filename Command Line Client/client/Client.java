@@ -32,7 +32,7 @@ public class Client {
     private static ObjectInputStream in = null;
     private final static String SERVER_ADDR = "34.227.5.168";
     //private final static String SERVER_ADDR = "127.0.0.1";
-    private static String PIC_STORE_LOC; // = "/home/james/Desktop/ServerPICs/";
+    private static String PIC_STORE_LOC;
     private static int total = -1;
 
     /**

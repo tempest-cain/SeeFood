@@ -67,7 +67,7 @@ while(loop):
 
         img_tensor = [np.asarray(image, dtype=np.float32)]
     except Exception:
-        break
+        continue
 
     # Run the image in the model.
     scores = sess.run(class_scores, {x_input: img_tensor, keep_prob: 1.})
@@ -85,7 +85,7 @@ while(loop):
     f.flush()
 
     ip = image_path + ".jpg"
-    image.save(ip)    
+    image.save(ip)
 
     # Create filename of results file to create
     #path = image_path[0:-3]
