@@ -7,9 +7,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
@@ -30,9 +30,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".GalleryActivity" />
-        <activity android:name=".DisplayResult" android:theme="@style/AppTheme.PopupTheme">
-        </activity>
-
+        <activity
+            android:name=".DisplayResult"
+            android:theme="@style/AppTheme.PopupTheme" />
+        <activity
+            android:name=".DisplaySelection"
+            android:theme="@style/AppTheme.PopupTheme" />
+        <activity
+            android:name=".StatisticsActivity"
+            android:theme="@style/AppTheme.PopupTheme" />
     </application>
 
 </manifest>

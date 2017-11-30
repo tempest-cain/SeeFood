@@ -1,31 +1,43 @@
 package ceg4110.seefood;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import static android.view.MotionEvent.ACTION_UP;
@@ -34,18 +46,26 @@ import static android.view.MotionEvent.ACTION_DOWN;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Bitmap mImageBitmap;
-    private String mCurrentPhotoPath;
-    private ImageView mImageView;
+    private String[] mCurrentPhotoPath = new String[5];
+    private String tempPath;
+
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int RETURN_FROM_SELECTION_MENU = 4;
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int READ_REQUEST_CODE = 42;
     private static final int BACK_FROM_RESULT = 2;
-    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
 
-    Intent intent; // intent to call the GalleryActivity
+    private final int REQUEST_EXTERNAL_STORAGE = 1;
+    private String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    Intent intent;
     RelativeLayout main;
     boolean alphaModified = false;
+    boolean readyToSend = false;
+    int selectionCounter = 0;
 
     ImageView cameraButton;
     ImageView browseButton;
@@ -126,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 switch(event.getAction()) {
                     case ACTION_UP:
                         statsButton.setImageResource(R.drawable.stats);
+                        intent = new Intent(MainActivity.this, StatisticsActivity.class);
                         new MyAsyncTask().execute("3");
                         break;
                     case ACTION_DOWN:
@@ -135,13 +156,18 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(alphaModified)
+        if(alphaModified) {
             main.setAlpha(1);
+            alphaModified = false;
+        }
+
+
     }
 
 
@@ -150,15 +176,19 @@ public class MainActivity extends AppCompatActivity {
      * The taken photo's path will be stored in the member variable mCurrentPhotoPath
      * @param v
      */
+
     public void dispatchTakePictureIntent() {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
             // Create the File where the photo should go
+
             File photoFile = null;
             try {
                 photoFile = createImageFile();
+
             } catch (IOException ex) {
                 // Error occurred while creating the File
 
@@ -174,8 +204,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    
+
+
+    /**
+     * Creates a file that will hold the image
+     * @return the file where the image will be stored
+     */
     private File createImageFile() throws IOException {
+
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -187,7 +223,9 @@ public class MainActivity extends AppCompatActivity {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
+        tempPath = image.getAbsolutePath();
+
+
         return image;
     }
 
@@ -216,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
         // The ACTION_OPEN_DOCUMENT intent was sent with the request code
         // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
         // response to some other intent, and the code below shouldn't run at all.
-
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) { //browse
             // The document selected by the user won't be returned in the intent.
             // Instead, a URI to that document will be contained in the return intent
@@ -225,14 +262,190 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = null;
             if (resultData != null) {
                 uri = resultData.getData();
-                File image = new File(uri.getPath());
-                mCurrentPhotoPath = image.getAbsolutePath();
-                mCurrentPhotoPath = mCurrentPhotoPath.replaceAll("/document/primary:","/storage/emulated/0/");//// FIXME: 11/20/2017
-                new MyAsyncTask().execute("1",mCurrentPhotoPath);
+
+                //get file name
+                String fileName = "no-path-found";
+                String[] filePathColumn = {MediaStore.Images.Media.SIZE};
+                Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
+                if(cursor.moveToFirst()){
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    fileName = cursor.getString(columnIndex);
+                }
+                cursor.close();
+
+                //parse file path
+                String absolutePath = "";
+
+                try {
+                    InputStream inStr = getContentResolver().openInputStream(uri);
+
+                    byte[]  buffer = new byte[Integer.parseInt(fileName)];
+                    inStr.read(buffer);
+                    inStr.close();
+
+                    File myFile = createImageFile();
+                    FileOutputStream out = new FileOutputStream(myFile);
+                    out.write(buffer);
+                    out.close();
+
+                    absolutePath = myFile.getAbsolutePath();
+
+
+                } catch (FileNotFoundException e) {
+                } catch (IOException e) {}
+
+
+                switch (selectionCounter) {
+                    case 0:
+                        mCurrentPhotoPath[selectionCounter++] = absolutePath;
+                        break;
+                    case 1:
+                        mCurrentPhotoPath[selectionCounter++] = absolutePath;
+                        break;
+                    case 2:
+                        mCurrentPhotoPath[selectionCounter++] = absolutePath;
+                        break;
+                    case 3:
+                        mCurrentPhotoPath[selectionCounter++] = absolutePath;
+                        break;
+                    case 4:
+                        mCurrentPhotoPath[selectionCounter++] = absolutePath;
+                        readyToSend = true;
+                }
+
+                if(readyToSend) {
+
+                    verifyStoragePermissions(this);
+                    triggerAsyncTask();
+
+                } else {
+                    //displayselection
+                    Intent openSelection = new Intent(MainActivity.this,DisplaySelection.class);
+                    openSelection.putExtra("image1Path",mCurrentPhotoPath[0]);
+                    openSelection.putExtra("image2Path",mCurrentPhotoPath[1]);
+                    openSelection.putExtra("image3Path",mCurrentPhotoPath[2]);
+                    openSelection.putExtra("image4Path",mCurrentPhotoPath[3]);
+                    openSelection.putExtra("image5Path",mCurrentPhotoPath[4]);
+                    openSelection.putExtra("selectionCount",selectionCounter);
+                    main.setAlpha((float).5);
+                    alphaModified = true;
+                    startActivityForResult(openSelection, RETURN_FROM_SELECTION_MENU);
+                }
 
             }
         } else if(requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) { //from camera
-            new MyAsyncTask().execute("1",mCurrentPhotoPath);
+
+            switch (selectionCounter) {
+                case 0:
+                    mCurrentPhotoPath[selectionCounter++] = tempPath;
+                    break;
+                case 1:
+                    mCurrentPhotoPath[selectionCounter++] = tempPath;
+                    break;
+                case 2:
+                    mCurrentPhotoPath[selectionCounter++] = tempPath;
+                    break;
+                case 3:
+                    mCurrentPhotoPath[selectionCounter++] = tempPath;
+                    break;
+                case 4:
+                    mCurrentPhotoPath[selectionCounter++] = tempPath;
+                    readyToSend = true;
+            }
+
+            if(readyToSend)
+                triggerAsyncTask();
+            else {
+
+                //show selection
+                Intent openSelection = new Intent(MainActivity.this,DisplaySelection.class);
+                openSelection.putExtra("image1Path",mCurrentPhotoPath[0]);
+                openSelection.putExtra("image2Path",mCurrentPhotoPath[1]);
+                openSelection.putExtra("image3Path",mCurrentPhotoPath[2]);
+                openSelection.putExtra("image4Path",mCurrentPhotoPath[3]);
+                openSelection.putExtra("image5Path",mCurrentPhotoPath[4]);
+                openSelection.putExtra("selectionCount",selectionCounter);
+                main.setAlpha((float).5);
+                alphaModified = true;
+                startActivityForResult(openSelection, RETURN_FROM_SELECTION_MENU);
+
+            }
+
+
+
+
+
+        } else if(requestCode == RETURN_FROM_SELECTION_MENU && resultCode == Activity.RESULT_OK) { // back from selection
+            readyToSend = resultData.getBooleanExtra("DONE",false);
+
+            if(readyToSend)
+                triggerAsyncTask();
+
+
+        }
+    }
+
+
+    /**
+     * Creates a MyAsyncTask to perform a task over the network
+     */
+    public void triggerAsyncTask() {
+
+        //verify valid permissions to read files
+        verifyStoragePermissions(this);
+
+
+        switch (selectionCounter) {
+            case 1:
+                new MyAsyncTask().execute("1",
+                        mCurrentPhotoPath[0]);
+                break;
+            case 2:
+                new MyAsyncTask().execute("1",
+                        mCurrentPhotoPath[0],
+                        mCurrentPhotoPath[1]);
+                break;
+            case 3:
+                new MyAsyncTask().execute("1",
+                        mCurrentPhotoPath[0],
+                        mCurrentPhotoPath[1],
+                        mCurrentPhotoPath[2]);
+                break;
+            case 4:
+                new MyAsyncTask().execute("1",
+                        mCurrentPhotoPath[0],
+                        mCurrentPhotoPath[1],
+                        mCurrentPhotoPath[2],
+                        mCurrentPhotoPath[3]);
+                break;
+            case 5:
+                new MyAsyncTask().execute("1",
+                        mCurrentPhotoPath[0],
+                        mCurrentPhotoPath[1],
+                        mCurrentPhotoPath[2],
+                        mCurrentPhotoPath[3],
+                        mCurrentPhotoPath[4]);
+        }
+
+    }
+
+    /**
+     * Checks if the app has permission to write to device storage
+     * If the app does not has permission then the user will be prompted to grant permissions
+     *
+     * @param activity
+     */
+    public void verifyStoragePermissions(Activity activity) {
+        // Check if the app has write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            //prompt the user for permission
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
         }
     }
 
@@ -246,36 +459,51 @@ public class MainActivity extends AppCompatActivity {
         private ObjectOutputStream out = null;
         private ObjectInputStream in = null;
         private final static String SERVER_ADDR = "34.227.5.168";//"34.227.5.168" : "127.0.0.1"
+        ArrayList<byte[]> imageList;
 
-        int isFood, confidence;
+        int[] isFood, confidence;
         int total, food, not;
 
         /**
-         * Communicates with the server
-         * @param action -
-         * @return
+         * Facilitates communication with the server
          */
         @Override
         protected Integer doInBackground(String... args) {
 
         try {
             switch (args[0]) {
-                case "1": //analyze image
-                    analyze(args[1]);
+                case "1": // analyze request
+                    establishConnection();
+                    imageList = new ArrayList();
+                    addFileToList(mCurrentPhotoPath[0]);
+                    if(selectionCounter > 1) addFileToList(mCurrentPhotoPath[1]);
+                    if(selectionCounter > 2) addFileToList(mCurrentPhotoPath[2]);
+                    if(selectionCounter > 3) addFileToList(mCurrentPhotoPath[3]);
+                    if(selectionCounter > 4) addFileToList(mCurrentPhotoPath[4]);
+                    sendData();
+                    receiveData();
+                    endConnection();
                     return 1;
-                case "2": //gallery
+                case "2": //open gallery
+                    establishConnection();
                     getStats();
+                    endConnection();
                     return 2;
-                case "3": //statistics
+                case "3": //open statistics
+                    establishConnection();
                     getStats();
+                    endConnection();
                     return 3;
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            return -1;
+        } catch (ClassNotFoundException e) {}
             return -1;
         }
 
         @Override
         protected void onPostExecute(Integer result) {
+
             Context context = getApplicationContext();
             CharSequence message;
             Toast toast;
@@ -287,7 +515,10 @@ public class MainActivity extends AppCompatActivity {
                     displayResult.putExtra("isFood",isFood);
                     displayResult.putExtra("confidence",confidence);
                     displayResult.putExtra("imagePath",mCurrentPhotoPath);
+                    displayResult.putExtra("selectionCount",selectionCounter);
                     startActivity(displayResult);
+                    selectionCounter = 0;
+                    readyToSend = false;
                     return;
                 case 2:
                     message = "Loading Gallery...";
@@ -297,9 +528,10 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     return;
                 case 3:
-                    message = "Food:\t"+food+"\nNot food:\t"+not+"\nPercentage of food pictures: "+(int) ((food / (double) total) * 100);
-                    toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-                    toast.show();
+                    intent.putExtra("food",food);
+                    intent.putExtra("not", not);
+                    intent.putExtra("total",total);
+                    startActivity(intent);
                     return;
                 case -1:
                     message = "Error";
@@ -309,21 +541,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        private void analyze(String pictureLoc) throws IOException {
 
-            // Catch an exception that is thrown if the Client is not connected to the SeeFood Server
+        /**
+         * Adds the file at the given path to imageList
+         * @param pictureLoc path for image to be added
+         * @throws IOException
+         */
+        private void addFileToList(String pictureLoc) throws IOException {
+
             try {
 
-                // Define a File object to later store the picture filename
-                File pict = null;
-
-                // Create File object and test if the filename exists
-                pict = new File(pictureLoc);
-
-                // Create connection to server if not already connected and send server the proper command
-                establishConnection();
-                out.writeInt(1);
-                out.flush();
+                File pict = new File(pictureLoc);
 
                 // Create a FileInputStream object to convert picture into a byte array
                 FileInputStream g = new FileInputStream(pict);
@@ -335,18 +563,54 @@ public class MainActivity extends AppCompatActivity {
                 // Close FileInputStream
                 g.close();
 
-                // Send the byte array to the Seefood Server
-                out.writeObject(byteArray);
-                out.flush();
-                // End of sending data to the SeeFood Server
-
-                // Wait for the SeeFood Server to send back results
-                isFood = in.readInt();
-                confidence = in.readInt();
+                imageList.add(byteArray);
 
             } catch (ConnectException ex) {}
 
-        }// End analyze()
+        }// End addFileToList()
+
+        /**
+         * Sends imageList to the server
+         */
+        private void sendData() {
+
+            try {
+                //send request code
+                out.writeInt(1);
+                out.flush();
+
+                // Send the byte array to the Seefood Server
+                out.writeObject(imageList);
+                out.flush();
+                // End of sending data to the SeeFood Server
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        /**
+         * Receives results from the server
+         * @throws IOException
+         * @throws ClassNotFoundException
+         */
+        private void receiveData() throws IOException, ClassNotFoundException {
+
+            ArrayList<int[]> results = new ArrayList();
+            // Wait for the SeeFood Server to send back results
+            results = (ArrayList<int[]>) in.readObject();
+
+            confidence = new int[results.size()];
+            isFood = new int[results.size()];
+
+            for(int i = 0; i < results.size(); i++) {
+
+                isFood[i] = results.get(i)[0];
+                confidence[i] = results.get(i)[1];
+            }
+        }
 
 
         /**
@@ -365,15 +629,14 @@ public class MainActivity extends AppCompatActivity {
         }// End establishConnection()
 
         /**
-         * Requests the current stats of the SeeFood server.
+         * Requests the current stats from the SeeFood server.
          * @throws IOException
          */
         private void getStats() throws IOException {
 
             try {
-                // Connect to SeeFood Server if not already connected and send the get statistics command
-                establishConnection();
 
+                //send request code
                 out.writeInt(3);
                 out.flush();
 
@@ -388,6 +651,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             } catch (ConnectException ex) {}
         }// End getStats()
+
+        /**
+         * Terminates connection with the SeeFood Server
+         *
+         * @throws IOException
+         */
+        private void endConnection() throws IOException {
+
+            // If there is an active connection with the SeeFood Server, end it otherwise do nothing
+            if (socket != null) {
+                out.close();
+                out = null;
+                in.close();
+                in = null;
+                socket.close();
+                socket = null;
+            }
+
+        }// End Connection
+
     }
 }
 
